@@ -47,10 +47,10 @@ public class BoardManager : MonoBehaviour
         foreach (Transform Child in grid.transform)
         {
             GameObject o;
-            Vector2 tempPos = (o = Child.gameObject).GetComponent<Block>().pos;
+            Vector2 tempPos = (o = Child.gameObject).GetComponent<Tile>().pos;
             gridGameObjects[(int) tempPos.x, (int) tempPos.y] = o;
         }
-        Debug.Log(gridGameObjects[7,6].GetComponent<Block>().pos);
+
     }
 
     #endregion
