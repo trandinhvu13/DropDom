@@ -104,7 +104,7 @@ public class BoardManager : MonoBehaviour
             {
                 Debug.Log("Again: Unassigned: " + numOfUnassignedTiles + "| num of block+ " + numOfBlocksInARow);
                 numOfBlocksInARow = Random.Range(2, 8 - blankBlockLength + 1);
-                while (numOfBlocksInARow == 2 || blankPos == 1 || blankPos == 2 || blankPos == 7 || blankPos == 8)
+                while (numOfBlocksInARow == 2 && (blankPos == 1 || blankPos == 2 || blankPos == 7 || blankPos == 8))
                 {
                     numOfBlocksInARow = Random.Range(2, 8 - blankBlockLength + 1);
                 }
@@ -128,6 +128,7 @@ public class BoardManager : MonoBehaviour
                 {
                     numOfBlocksInARow2 = Random.Range(1, numOfBlocksInARow - numOfBlocksInARow1 + 1);
                 }
+
                 GenerateBlock(numOfRemainingTiles, numOfBlocksInARow2); //generate for the 2nd blank part
             }
         }
