@@ -23,6 +23,15 @@ public class GameEvents : MonoBehaviour
         }
     }
     #endregion
+
+    #region Tile
+    public event Action<int, int> OnSpawnNewBlock; 
+    public void SpawnNewBlock(int pos, int blockType)
+    {
+        OnSpawnNewBlock?.Invoke(pos, blockType);
+    }
     
+
+    #endregion   
     
 }

@@ -34,8 +34,10 @@ public class BoardManager : MonoBehaviour
 
     #region Variables
 
-    [SerializeField] private GameObject[,] gridGameObjects = new GameObject[8, 10];
+    private GameObject[,] gridGameObjects = new GameObject[8, 10];
+    private GameObject[] standbyRowGameObjects = new GameObject[8];
     [SerializeField] private GameObject grid;
+    [SerializeField] private GameObject standbyRow;
 
     #endregion
 
@@ -45,7 +47,7 @@ public class BoardManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GenerateRow();
+            SpawnNewRow();
         }
     }
 
@@ -61,9 +63,16 @@ public class BoardManager : MonoBehaviour
             Vector2 tempPos = (o = Child.gameObject).GetComponent<Tile>().pos;
             gridGameObjects[(int) tempPos.x, (int) tempPos.y] = o;
         }
+
+        foreach (Transform Child in standbyRow.transform)
+        {
+            int x = (int) Child.gameObject.GetComponent<Tile>().pos.x;
+
+            standbyRowGameObjects[x] = Child.gameObject;
+        }
     }
 
-    private void GenerateRow()
+    private int[] GenerateRow()
     {
         int[] lineValue = {-1, -1, -1, -1, -1, -1, -1, -1}; //array represents upcoming line
 
@@ -173,6 +182,37 @@ public class BoardManager : MonoBehaviour
         }
 
         DebugLogArray(lineValue);
+        return lineValue;
+    }
+
+    private void SpawnNewRow() //spawn row below the board
+    {
+        int[] newRow = GenerateRow();
+
+        for (int i = 0; i < newRow.Length; i++)
+        {
+            if (newRow[i] == 11)
+            {
+                GameEvents.Instance.SpawnNewBlock(i, 1);
+            }
+            else if (newRow[i] == 21)
+            {
+                GameEvents.Instance.SpawnNewBlock(i, 2);
+            }
+            else if (newRow[i] == 31)
+            {
+                GameEvents.Instance.SpawnNewBlock(i, 3);
+            }
+            else if (newRow[i] == 41)
+            {
+                GameEvents.Instance.SpawnNewBlock(i, 4);
+            }
+        }
+    }
+
+    private void MoveUpNewRow() //move new row from under the board up on the board
+    {
+        //Event call move up all current block
     }
 
     private void DebugLogArray(int[] array)
