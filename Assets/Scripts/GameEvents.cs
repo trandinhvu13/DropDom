@@ -32,6 +32,16 @@ public class GameEvents : MonoBehaviour
     }
     
 
-    #endregion   
+    #endregion
+
+    #region Block
+    public event Action OnBlockMoveUp; 
+    public void BlockMoveUp()
+    {
+        OnBlockMoveUp?.Invoke();
+    }
+    
+
+    #endregion
     
 }

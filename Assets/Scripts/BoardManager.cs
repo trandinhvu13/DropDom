@@ -34,8 +34,10 @@ public class BoardManager : MonoBehaviour
 
     #region Variables
 
-    private GameObject[,] gridGameObjects = new GameObject[8, 10];
+    public GameObject[,] gridGameObjects = new GameObject[8, 10];
     private GameObject[] standbyRowGameObjects = new GameObject[8];
+    public int[,] gridValue = new int[8, 10];
+    public int[] standbyRowValue = new int[8];
     [SerializeField] private GameObject grid;
     [SerializeField] private GameObject standbyRow;
 
@@ -48,6 +50,11 @@ public class BoardManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SpawnNewRow();
+        }
+
+        if (Input.GetKeyDown((KeyCode.A)))
+        {
+            MoveUpNewRow();
         }
     }
 
@@ -69,6 +76,14 @@ public class BoardManager : MonoBehaviour
             int x = (int) Child.gameObject.GetComponent<Tile>().pos.x;
 
             standbyRowGameObjects[x] = Child.gameObject;
+        }
+
+        for (int x = 0; x < 8; x++)
+        {
+            for (int y = 0; y < 10; y++)
+            {
+                gridValue[x, y] = 0; //0 = blank
+            }
         }
     }
 
@@ -188,9 +203,10 @@ public class BoardManager : MonoBehaviour
     private void SpawnNewRow() //spawn row below the board
     {
         int[] newRow = GenerateRow();
-
+        
         for (int i = 0; i < newRow.Length; i++)
         {
+            standbyRowValue[i] = newRow[i];
             if (newRow[i] == 11)
             {
                 GameEvents.Instance.SpawnNewBlock(i, 1);
@@ -212,7 +228,23 @@ public class BoardManager : MonoBehaviour
 
     private void MoveUpNewRow() //move new row from under the board up on the board
     {
-        //Event call move up all current block
+        
+        for (int x = 0; x < 7; x++)//change gridvalue array
+        {
+            for (int y = 7; y >= 0; y--)
+            {
+                if (y > 0)
+                {
+                    gridValue[x, y] = gridValue[x, y - 1]; 
+                }
+                else
+                {
+                    gridValue[x, y] = standbyRowValue[x];
+                }
+            }
+        }
+        GameEvents.Instance.BlockMoveUp();
+        SpawnNewRow();
     }
 
     private void DebugLogArray(int[] array)

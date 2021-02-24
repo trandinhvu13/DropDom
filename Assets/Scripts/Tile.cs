@@ -29,7 +29,7 @@ public class Tile : MonoBehaviour
 
     private void OnDisable()
     {
-        throw new NotImplementedException();
+        GameEvents.Instance.OnSpawnNewBlock -= SpawnBlock;
     }
 
     #endregion
@@ -72,7 +72,8 @@ public class Tile : MonoBehaviour
 
             Vector3 spawnPos = new Vector3(transform.position.x + spawnOffset, yPos,-2);
 
-            LeanPool.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, transform);
+            GameObject block = LeanPool.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, transform);
+            block.GetComponent<Block>().pos = new Vector2(pos.x, -1);
         }
     }
 
