@@ -37,9 +37,9 @@ public class Block : MonoBehaviour
             isOnBoard = true;
         }
         pos = new Vector2(pos.x + 1, pos.y + 1);
-        transform.position = new Vector3(transform.position.x, transform.position.y + 1);
+        transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
         //change parent
-        transform.parent = BoardManager.Instance.gridGameObjects[(int)pos.x, (int)pos.y].transform;
+       //transform.parent = BoardManager.Instance.gridGameObjects[(int)pos.x, (int)pos.y+1].transform;
     }
 
     #endregion

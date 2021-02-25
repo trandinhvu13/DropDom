@@ -93,8 +93,9 @@ public class BoardManager : MonoBehaviour
 
 
         int blankPos = Random.Range(1, 8 + 1); //position of the blank
+        Debug.Log("blank pos OG: "+ blankPos);
         int blankBlockLength = Random.Range(1, 8 - blankPos + 1); //length of that blank
-
+        Debug.Log("blank length OG: "+ blankBlockLength);
         if (blankBlockLength > 3)
         {
             blankBlockLength = 3;
@@ -139,15 +140,17 @@ public class BoardManager : MonoBehaviour
                     numOfBlocksInARow1 = Random.Range(1, blankPos - 1 + 1);
                 }
             }
+            Debug.Log("Num of block row 1 "+ numOfBlocksInARow1);
 
             GenerateBlock(blankPos - 1, numOfBlocksInARow1); //generate for the first blank part
 
             int numOfRemainingTiles = 8 - (blankPos + blankBlockLength - 1);
+            Debug.Log("blank "+blankPos + "| length "+blankBlockLength );
             int numOfBlocksInARow2;
 
             numOfBlocksInARow2 =
                 Random.Range(numOfRemainingTiles > 4 ? 2 : 1, numOfBlocksInARow - numOfBlocksInARow1 + 1);
-
+            Debug.Log(numOfRemainingTiles + "|" + numOfBlocksInARow2);
             GenerateBlock(numOfRemainingTiles, numOfBlocksInARow2); //generate for the 2nd blank part
         }
 
@@ -161,17 +164,22 @@ public class BoardManager : MonoBehaviour
             for (int i = 0; i < count; i++)
             {
                 int tempBlockLength;
-                if (i != count - 1 && blocksInARowNum != 1)
+                if (unassignedTileNum - blocksInARowNum == 0)
+                {
+                    tempBlockLength = 1;
+                }
+                else if (blocksInARowNum > 1)
                 {
                     tempBlockLength = Random.Range(1, unassignedTileNum + 1);
-                    while (tempBlockLength >= 5 || (unassignedTileNum - tempBlockLength > 4))
+                    while (tempBlockLength >= 5 || (unassignedTileNum - tempBlockLength > 4) )
                     {
                         tempBlockLength = Random.Range(1, unassignedTileNum + 1);
                     }
                 }
                 else
-                {
+                {   
                     tempBlockLength = unassignedTileNum;
+                    
                 }
 
                 for (int j = 1; j <= tempBlockLength; j++) //add a block to linevalue[]
@@ -191,6 +199,7 @@ public class BoardManager : MonoBehaviour
                 if (lineValue[i] == -1)
                 {
                     lineValue[i] = _value;
+                    Debug.Log("Add "+_value+" at "+i);
                     break;
                 }
             }
@@ -203,7 +212,7 @@ public class BoardManager : MonoBehaviour
     private void SpawnNewRow() //spawn row below the board
     {
         int[] newRow = GenerateRow();
-        
+
         for (int i = 0; i < newRow.Length; i++)
         {
             standbyRowValue[i] = newRow[i];
@@ -228,14 +237,13 @@ public class BoardManager : MonoBehaviour
 
     private void MoveUpNewRow() //move new row from under the board up on the board
     {
-        
-        for (int x = 0; x < 7; x++)//change gridvalue array
+        for (int x = 0; x < 7; x++) //change gridvalue array
         {
             for (int y = 7; y >= 0; y--)
             {
                 if (y > 0)
                 {
-                    gridValue[x, y] = gridValue[x, y - 1]; 
+                    gridValue[x, y] = gridValue[x, y - 1];
                 }
                 else
                 {
@@ -243,6 +251,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+
         GameEvents.Instance.BlockMoveUp();
         SpawnNewRow();
     }
