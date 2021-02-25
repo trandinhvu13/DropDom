@@ -11,7 +11,8 @@ public class Block : MonoBehaviour
     public int blockLength;
     [SerializeField] private bool isOnBoard = false;
     public Vector2 pos;
-
+    [SerializeField] private BlockTranslate translateComponent;
+    [SerializeField] private GameObject anchorPoint;
     #endregion
 
     #region Mono
@@ -35,12 +36,18 @@ public class Block : MonoBehaviour
         if (!isOnBoard)
         {
             isOnBoard = true;
+            translateComponent.enabled = true;
         }
         
         transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
         //change parent
-        Debug.Log("x: " + pos.x + " ,y: " + pos.y);
+
         transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
+    }
+
+    public void LimitTranslateArea()
+    {
+        
     }
 
     #endregion
