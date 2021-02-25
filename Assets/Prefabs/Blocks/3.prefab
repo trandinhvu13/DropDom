@@ -157,6 +157,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockLength: 3
+  isOnBoard: 0
+  pos: {x: 0, y: 0}
 --- !u!65 &305643935062063670
 BoxCollider:
   m_ObjectHideFlags: 0

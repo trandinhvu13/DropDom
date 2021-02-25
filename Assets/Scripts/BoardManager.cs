@@ -93,9 +93,8 @@ public class BoardManager : MonoBehaviour
 
 
         int blankPos = Random.Range(1, 8 + 1); //position of the blank
-        Debug.Log("blank pos OG: "+ blankPos);
         int blankBlockLength = Random.Range(1, 8 - blankPos + 1); //length of that blank
-        Debug.Log("blank length OG: "+ blankBlockLength);
+
         if (blankBlockLength > 3)
         {
             blankBlockLength = 3;
@@ -140,17 +139,16 @@ public class BoardManager : MonoBehaviour
                     numOfBlocksInARow1 = Random.Range(1, blankPos - 1 + 1);
                 }
             }
-            Debug.Log("Num of block row 1 "+ numOfBlocksInARow1);
+
 
             GenerateBlock(blankPos - 1, numOfBlocksInARow1); //generate for the first blank part
 
             int numOfRemainingTiles = 8 - (blankPos + blankBlockLength - 1);
-            Debug.Log("blank "+blankPos + "| length "+blankBlockLength );
+
             int numOfBlocksInARow2;
 
             numOfBlocksInARow2 =
                 Random.Range(numOfRemainingTiles > 4 ? 2 : 1, numOfBlocksInARow - numOfBlocksInARow1 + 1);
-            Debug.Log(numOfRemainingTiles + "|" + numOfBlocksInARow2);
             GenerateBlock(numOfRemainingTiles, numOfBlocksInARow2); //generate for the 2nd blank part
         }
 
@@ -199,7 +197,6 @@ public class BoardManager : MonoBehaviour
                 if (lineValue[i] == -1)
                 {
                     lineValue[i] = _value;
-                    Debug.Log("Add "+_value+" at "+i);
                     break;
                 }
             }
@@ -263,8 +260,7 @@ public class BoardManager : MonoBehaviour
         {
             output += array[i] + " ";
         }
-
-        Debug.Log(output);
+        
     }
 
     #endregion
