@@ -146,6 +146,7 @@ public class BlockTranslate : MonoBehaviour
 
     public float leftLimit;
     public float rightLimit;
+
     private void Translate(Vector2 screenDelta)
     {
         // Make sure the camera exists
@@ -161,17 +162,22 @@ public class BlockTranslate : MonoBehaviour
             screenPoint += (Vector3) screenDelta * Sensitivity;
             // Convert back to world space
             Vector3 tempPos = camera.ScreenToWorldPoint(screenPoint);
-            
+
             position = new Vector3(tempPos.x, position.y, position.z);
             if (position.x < leftLimit)
             {
+                Debug.Log("baa");
                 transform.position = new Vector2(leftLimit, position.y);
-            }
-
-            if (position.y > rightLimit)
+            }else if (position.y > rightLimit)
             {
+                Debug.Log("aaa");
                 transform.position = new Vector2(rightLimit, position.y);
             }
+            else
+            {
+                transform.position = position;
+            }
+
 
         }
         else

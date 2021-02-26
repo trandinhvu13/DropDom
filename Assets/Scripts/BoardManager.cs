@@ -255,7 +255,6 @@ public class BoardManager : MonoBehaviour
     public int ReturnBlankLength(int x, int y, int blockLength, string dir)
     {
         int blankLength = 0;
-        Debug.Log("Doing: " + x + ", " + y + ", length: " + blockLength + " " + dir);
         if ((x == 0 && dir == "left") || (x == 7 && dir == "right"))
         {
             return 0;
@@ -306,12 +305,10 @@ public class BoardManager : MonoBehaviour
             {
                 return 0;
             }
-            Debug.Log("Pass");
             for (int i = 0; i < 7; i++)
             {
                 if (x + blockLength + i <= 7)
                 {
-                    Debug.Log(x+blockLength+i);
                     if (gridValue[x + blockLength + i, y] == 0)
                     {
                         blankLength++;
