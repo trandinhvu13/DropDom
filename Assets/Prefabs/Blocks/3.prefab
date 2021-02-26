@@ -161,6 +161,9 @@ MonoBehaviour:
   isOnBoard: 0
   pos: {x: 0, y: 0}
   translateComponent: {fileID: 525154290136819188}
+  anchorPoint: {fileID: 0}
+  leftBlankLength: 0
+  rightBlankLength: 0
 --- !u!114 &525154290136819188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +187,8 @@ MonoBehaviour:
   Damping: -1
   Inertia: 0
   remainingTranslation: {x: 0, y: 0, z: 0}
+  leftLimit: 0
+  rightLimit: 0
 --- !u!114 &4639478378621705384
 MonoBehaviour:
   m_ObjectHideFlags: 0

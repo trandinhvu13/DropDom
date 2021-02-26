@@ -169,15 +169,14 @@ public class BoardManager : MonoBehaviour
                 else if (blocksInARowNum > 1)
                 {
                     tempBlockLength = Random.Range(1, unassignedTileNum + 1);
-                    while (tempBlockLength >= 5 || (unassignedTileNum - tempBlockLength > 4) )
+                    while (tempBlockLength >= 5 || (unassignedTileNum - tempBlockLength > 4))
                     {
                         tempBlockLength = Random.Range(1, unassignedTileNum + 1);
                     }
                 }
                 else
-                {   
+                {
                     tempBlockLength = unassignedTileNum;
-                    
                 }
 
                 for (int j = 1; j <= tempBlockLength; j++) //add a block to linevalue[]
@@ -253,6 +252,88 @@ public class BoardManager : MonoBehaviour
         SpawnNewRow();
     }
 
+    public int ReturnBlankLength(int x, int y, int blockLength, string dir)
+    {
+        int blankLength = 0;
+        Debug.Log("Doing: " + x + ", " + y + ", length: " + blockLength + " " + dir);
+        if ((x == 0 && dir == "left") || (x == 7 && dir == "right"))
+        {
+            return 0;
+        }
+
+        if (dir == "left")
+        {
+            if (x == 0)
+            {
+                return 0;
+            }
+
+            if (gridValue[x - 1, y] != 0)
+            {
+                return 0;
+            }
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (x - 1 - i >= 0)
+                {
+                    if (gridValue[x - 1 - i, y] == 0)
+                    {
+                        blankLength++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return blankLength;
+        }
+
+        if (dir == "right")
+        {
+            if (x + blockLength - 1 >= 7)
+            {
+                return 0;
+            }
+
+            if (gridValue[x + blockLength, y] != 0)
+            {
+                return 0;
+            }
+            Debug.Log("Pass");
+            for (int i = 0; i < 7; i++)
+            {
+                if (x + blockLength + i <= 7)
+                {
+                    Debug.Log(x+blockLength+i);
+                    if (gridValue[x + blockLength + i, y] == 0)
+                    {
+                        blankLength++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return blankLength;
+        }
+
+        return 0;
+    }
+
+
     private void DebugLogArray(int[] array)
     {
         string output = "";
@@ -260,7 +341,6 @@ public class BoardManager : MonoBehaviour
         {
             output += array[i] + " ";
         }
-        
     }
 
     #endregion

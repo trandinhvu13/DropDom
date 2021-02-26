@@ -157,10 +157,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa85da4af96dacf4cafdeb66e248857b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockLength: 3
+  blockLength: 4
   isOnBoard: 0
   pos: {x: 0, y: 0}
   translateComponent: {fileID: -7248031898072347155}
+  anchorPoint: {fileID: 0}
+  leftBlankLength: 0
+  rightBlankLength: 0
 --- !u!114 &-7248031898072347155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +187,8 @@ MonoBehaviour:
   Damping: -1
   Inertia: 0
   remainingTranslation: {x: 0, y: 0, z: 0}
+  leftLimit: 0
+  rightLimit: 0
 --- !u!114 &-203912208181531749
 MonoBehaviour:
   m_ObjectHideFlags: 0
