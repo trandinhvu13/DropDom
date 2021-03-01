@@ -235,7 +235,7 @@ public class BoardManager : MonoBehaviour
     {
         for (int x = 0; x < 8; x++) //change gridvalue array
         {
-            for (int y = 7; y >= 0; y--)
+            for (int y = 9; y >= 0; y--)
             {
                 if (y > 0)
                 {
@@ -296,7 +296,6 @@ public class BoardManager : MonoBehaviour
 
         if (dir == "right")
         {
-            DebugALine(y);
             if (x + blockLength - 1 >= 7)
             {
                 return 0;

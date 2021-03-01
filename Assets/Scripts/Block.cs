@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Lean.Transition.Method;
+using Lean.Pool;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public class Block : MonoBehaviour, IPoolable
 {
     #region Variable
 
@@ -19,13 +20,12 @@ public class Block : MonoBehaviour
     #endregion
 
     #region Mono
-
-    private void OnEnable()
+    public void OnSpawn()
     {
         GameEvents.Instance.OnBlockMoveUp += MoveUp;
     }
 
-    private void OnDisable()
+    public void OnDespawn()
     {
         GameEvents.Instance.OnBlockMoveUp -= MoveUp;
     }
@@ -36,15 +36,23 @@ public class Block : MonoBehaviour
 
     private void MoveUp()
     {
-        if (!isOnBoard)
+        if ((int) pos.y >= 9)
         {
-            isOnBoard = true;
+            LeanPool.Despawn(gameObject);
         }
+        else
+        {
+            if (!isOnBoard)
+            {
+                isOnBoard = true;
+            }
 
-        transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
-        transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
-        pos.y++;
-        FindLimitArea();
+            transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
+            transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
+            pos.y++;
+            FindLimitArea();
+        }
+        
     }
 
     public void FindLimitArea() // when block is first selected
@@ -86,4 +94,6 @@ public class Block : MonoBehaviour
     }
 
     #endregion
+
+   
 }
