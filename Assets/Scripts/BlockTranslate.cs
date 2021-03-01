@@ -166,11 +166,9 @@ public class BlockTranslate : MonoBehaviour
             position = new Vector3(tempPos.x, position.y, position.z);
             if (position.x < leftLimit)
             {
-                Debug.Log("baa");
                 transform.position = new Vector2(leftLimit, position.y);
-            }else if (position.y > rightLimit)
+            }else if (position.x > rightLimit)
             {
-                Debug.Log("aaa");
                 transform.position = new Vector2(rightLimit, position.y);
             }
             else

@@ -233,7 +233,7 @@ public class BoardManager : MonoBehaviour
 
     private void MoveUpNewRow() //move new row from under the board up on the board
     {
-        for (int x = 0; x < 7; x++) //change gridvalue array
+        for (int x = 0; x < 8; x++) //change gridvalue array
         {
             for (int y = 7; y >= 0; y--)
             {
@@ -296,6 +296,7 @@ public class BoardManager : MonoBehaviour
 
         if (dir == "right")
         {
+            DebugALine(y);
             if (x + blockLength - 1 >= 7)
             {
                 return 0;
@@ -318,10 +319,6 @@ public class BoardManager : MonoBehaviour
                         break;
                     }
                 }
-                else
-                {
-                    break;
-                }
             }
 
             return blankLength;
@@ -338,6 +335,17 @@ public class BoardManager : MonoBehaviour
         {
             output += array[i] + " ";
         }
+        Debug.Log(output);
+    }
+
+    private void DebugALine(int y)
+    {
+        string output = "Line " + y + ": ";
+        for (int i = 0; i < 8; i++)
+        {
+            output += gridValue[i, y] + " ";
+        }
+        Debug.Log(output);
     }
 
     #endregion

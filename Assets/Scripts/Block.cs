@@ -66,20 +66,20 @@ public class Block : MonoBehaviour
                 translateComponent.enabled = true;
                 if (leftBlankLength != 0)
                 {
-                    translateComponent.leftLimit = pos.x - leftBlankLength + 1;
+                    translateComponent.leftLimit = transform.position.x - leftBlankLength;
                 }
                 else
                 {
-                    translateComponent.leftLimit = pos.x + 1;
+                    translateComponent.leftLimit = transform.position.x;
                 }
 
                 if (rightBlankLength != 0)
                 {
-                    translateComponent.rightLimit = pos.x + rightBlankLength + 1;
+                    translateComponent.rightLimit = transform.position.x + rightBlankLength ;
                 }
                 else
                 {
-                    translateComponent.rightLimit = pos.x + 1;
+                    translateComponent.rightLimit = transform.position.x ;
                 }
             }
         }
