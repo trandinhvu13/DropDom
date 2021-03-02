@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -37,6 +38,7 @@ public class BoardManager : MonoBehaviour
     public GameObject[,] gridGameObjects = new GameObject[8, 10];
     private GameObject[] standbyRowGameObjects = new GameObject[8];
     public int[,] gridValue = new int[8, 10];
+    public int[,] numOfStepDown = new int[8, 10];
     public int[] standbyRowValue = new int[8];
     [SerializeField] private GameObject grid;
     [SerializeField] private GameObject standbyRow;
@@ -138,7 +140,7 @@ public class BoardManager : MonoBehaviour
 
 
             GenerateBlock(blankPos - 1, numOfBlocksInARow1); //generate for the first blank part
-            Debug.Log(blankPos - 1 + " " + numOfBlocksInARow1 );
+            Debug.Log(blankPos - 1 + " " + numOfBlocksInARow1);
             int numOfRemainingTiles = 8 - (blankPos + blankBlockLength - 1);
 
             int numOfBlocksInARow2;
@@ -300,6 +302,7 @@ public class BoardManager : MonoBehaviour
             {
                 return 0;
             }
+
             for (int i = 0; i < 7; i++)
             {
                 if (x + blockLength + i <= 7)
@@ -321,6 +324,88 @@ public class BoardManager : MonoBehaviour
         return 0;
     }
 
+    public void ScanMoveDownArrayValue(bool isContinue)
+    {
+        if (isContinue)
+        {
+            isContinue = false;
+            for (int y = 1; y < 10; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    switch (gridValue[x, y])
+                    {
+                        case 11:
+                        {
+                            if (gridValue[x, y - 1] == 0)
+                            {
+                                MoveDown(x, y, 1);
+                            }
+
+                            break;
+                        }
+                        case 21:
+                        {
+                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0)
+                            {
+                                MoveDown(x, y, 2);
+                            }
+
+                            break;
+                        }
+                        case 31:
+                        {
+                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0 &&
+                                gridValue[x + 2, y - 1] == 0)
+                            {
+                                MoveDown(x, y, 3);
+                            }
+
+                            break;
+                        }
+                        case 41:
+                        {
+                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0 &&
+                                gridValue[x + 2, y - 1] == 0 &&
+                                gridValue[x + 3, y - 1] == 0)
+                            {
+                                MoveDown(x, y, 4);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            ScanMoveDownArrayValue(isContinue);
+        }
+        else
+        {
+            // done scan + execute move down (send message to block)
+
+            //reset num of step array
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 10; y++)
+                {
+                    numOfStepDown[x, y] = 0;
+                }
+            }
+
+            Debug.Log("End Scan");
+        }
+
+        void MoveDown(int x, int y, int length)
+        {
+            numOfStepDown[x, y]++;
+            for (int i = 1; i <= length; i++)
+            {
+                gridValue[x + i - 1, y] = 0;
+                gridValue[x + i - 1, y - 1] = length * 10 + i;
+            }
+        }
+    }
 
     private void DebugLogArray(int[] array)
     {
@@ -329,6 +414,7 @@ public class BoardManager : MonoBehaviour
         {
             output += array[i] + " ";
         }
+
         Debug.Log(output);
     }
 
@@ -339,6 +425,7 @@ public class BoardManager : MonoBehaviour
         {
             output += gridValue[i, y] + " ";
         }
+
         Debug.Log(output);
     }
 
