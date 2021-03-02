@@ -125,11 +125,7 @@ public class BoardManager : MonoBehaviour
 
             if (blankPos - 1 > 4)
             {
-                numOfBlocksInARow1 = Random.Range(2, blankPos - 1 + 1);
-                while (numOfBlocksInARow1 > numOfBlocksInARow)
-                {
-                    numOfBlocksInARow1 = Random.Range(2, blankPos - 1 + 1);
-                }
+                numOfBlocksInARow1 = Random.Range(2, numOfBlocksInARow);
             }
             else
             {
@@ -142,7 +138,7 @@ public class BoardManager : MonoBehaviour
 
 
             GenerateBlock(blankPos - 1, numOfBlocksInARow1); //generate for the first blank part
-
+            Debug.Log(blankPos - 1 + " " + numOfBlocksInARow1 );
             int numOfRemainingTiles = 8 - (blankPos + blankBlockLength - 1);
 
             int numOfBlocksInARow2;
@@ -157,7 +153,6 @@ public class BoardManager : MonoBehaviour
         {
             int unassignedTileNum = _unassignedTileNum;
             int blocksInARowNum = _blocksInARowNum;
-
             int count = _blocksInARowNum; //count in for loop
             for (int i = 0; i < count; i++)
             {
@@ -168,7 +163,7 @@ public class BoardManager : MonoBehaviour
                 }
                 else if (blocksInARowNum > 1)
                 {
-                    tempBlockLength = Random.Range(1, unassignedTileNum + 1);
+                    tempBlockLength = Random.Range(1, unassignedTileNum);
                     while (tempBlockLength >= 5 || (unassignedTileNum - tempBlockLength > 4))
                     {
                         tempBlockLength = Random.Range(1, unassignedTileNum + 1);
