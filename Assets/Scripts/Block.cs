@@ -112,18 +112,14 @@ public class Block : MonoBehaviour, IPoolable
                     transform.position = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, currentTransform.position.z);
                     transform.parent = matchedTile.transform;
                     //goi scan move down 
-                    Debug.Log("Move to " + pos);
                 }
                 else
                 {
-                    Debug.Log("Ve vi tri cu1");
-                    transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform
-                        .position.z); //ve vi tri cu
+                    transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform.position.z); //ve vi tri cu
                 }
             }
             else
             {
-                Debug.Log("Ve vi tri cu");
                 transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform.position.z); //ve vi tri cu
             }
         }
