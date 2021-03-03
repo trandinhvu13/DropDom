@@ -191,7 +191,7 @@ MonoBehaviour:
   isOnBoard: 0
   pos: {x: 0, y: 0}
   translateComponent: {fileID: 9006199561854317759}
-  anchorPoint: {fileID: 0}
+  anchorPoint: {fileID: 4181564426045941608}
   leftBlankLength: 0
   rightBlankLength: 0
 --- !u!114 &9006199561854317759
@@ -245,7 +245,18 @@ MonoBehaviour:
       m_Calls: []
   onDeselect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4181564426420443003}
+        m_MethodName: DragFingerUpToTile
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   isSelected: 0
 --- !u!61 &-2613935457714149934
 BoxCollider2D:

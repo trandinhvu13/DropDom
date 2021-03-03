@@ -42,6 +42,8 @@ public class BoardManager : MonoBehaviour
     public int[] standbyRowValue = new int[8];
     [SerializeField] private GameObject grid;
     [SerializeField] private GameObject standbyRow;
+    [SerializeField] private int numOfScan = 0;
+    [SerializeField] private float checkDistance;
 
     #endregion
 
@@ -51,7 +53,12 @@ public class BoardManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            SpawnNewRow();
+            DebugWholeArray(gridValue);
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            DebugWholeArray(numOfStepDown);
         }
 
         if (Input.GetKeyDown((KeyCode.A)))
@@ -140,7 +147,6 @@ public class BoardManager : MonoBehaviour
 
 
             GenerateBlock(blankPos - 1, numOfBlocksInARow1); //generate for the first blank part
-            Debug.Log(blankPos - 1 + " " + numOfBlocksInARow1);
             int numOfRemainingTiles = 8 - (blankPos + blankBlockLength - 1);
 
             int numOfBlocksInARow2;
@@ -198,7 +204,7 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        DebugLogArray(lineValue);
+        //DebugLogArray(lineValue);
         return lineValue;
     }
 
@@ -393,18 +399,43 @@ public class BoardManager : MonoBehaviour
                 }
             }
 
+            numOfScan = 0;
             Debug.Log("End Scan");
         }
 
         void MoveDown(int x, int y, int length)
         {
-            numOfStepDown[x, y]++;
+            isContinue = true;
+            numOfStepDown[x, y + numOfScan]++;
             for (int i = 1; i <= length; i++)
             {
                 gridValue[x + i - 1, y] = 0;
                 gridValue[x + i - 1, y - 1] = length * 10 + i;
             }
+
+            numOfScan++;
         }
+    }
+
+    public GameObject CheckDropPos(Transform pos, int y)
+    {
+        float shortestDistance = checkDistance;
+        GameObject matchedTile = null;
+        for (int i = 0; i < 8; i++)
+        {
+            var tempDistance = Vector2.Distance(pos.position, gridGameObjects[i, y].transform.position);
+            if (tempDistance < shortestDistance)
+            {
+                shortestDistance = tempDistance;
+                matchedTile = gridGameObjects[i, y];
+            }
+        }
+
+        return matchedTile;
+    }
+
+    public void DragBlockFingerUp(Vector2 oldPos, Vector2 newPos, int length)
+    {
     }
 
     private void DebugLogArray(int[] array)
@@ -424,6 +455,22 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < 8; i++)
         {
             output += gridValue[i, y] + " ";
+        }
+
+        Debug.Log(output);
+    }
+
+    private void DebugWholeArray(int[,] array)
+    {
+        string output = "";
+        for (int y = 7; y >= 0; y--)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                output += array[x, y] + " ";
+            }
+
+            output += Environment.NewLine;
         }
 
         Debug.Log(output);

@@ -16,13 +16,16 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private GameObject anchorPoint;
     [SerializeField] private int leftBlankLength = 0;
     [SerializeField] private int rightBlankLength = 0;
+    private Transform currentTransform;
 
     #endregion
 
     #region Mono
+
     public void OnSpawn()
     {
         GameEvents.Instance.OnBlockMoveUp += MoveUp;
+        currentTransform = transform;
     }
 
     public void OnDespawn()
@@ -50,9 +53,9 @@ public class Block : MonoBehaviour, IPoolable
             transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
+            currentTransform = transform;
             FindLimitArea();
         }
-        
     }
 
     public void FindLimitArea() // when block is first selected
@@ -83,17 +86,48 @@ public class Block : MonoBehaviour, IPoolable
 
                 if (rightBlankLength != 0)
                 {
-                    translateComponent.rightLimit = transform.position.x + rightBlankLength ;
+                    translateComponent.rightLimit = transform.position.x + rightBlankLength;
                 }
                 else
                 {
-                    translateComponent.rightLimit = transform.position.x ;
+                    translateComponent.rightLimit = transform.position.x;
                 }
             }
         }
     }
 
-    #endregion
+    public void DragFingerUpToTile()
+    {
+        if (translateComponent.enabled)
+        {
+            GameObject matchedTile = BoardManager.Instance.CheckDropPos(anchorPoint.transform, (int) pos.y);
+            Vector2 oldPos = pos;
+            if (matchedTile)
+            {
+                pos = matchedTile.GetComponent<Tile>().pos;
+                if (oldPos != pos)
+                {
+                    BoardManager.Instance.DragBlockFingerUp(oldPos, pos, blockLength);
+                    Vector3 newPos = matchedTile.transform.position;
+                    transform.position = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, currentTransform.position.z);
+                    transform.parent = matchedTile.transform;
+                    //goi scan move down 
+                    Debug.Log("Move to " + pos);
+                }
+                else
+                {
+                    Debug.Log("Ve vi tri cu1");
+                    transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform
+                        .position.z); //ve vi tri cu
+                }
+            }
+            else
+            {
+                Debug.Log("Ve vi tri cu");
+                transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform.position.z); //ve vi tri cu
+            }
+        }
+    }
 
-   
+    #endregion
 }
