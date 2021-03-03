@@ -25,12 +25,14 @@ public class Block : MonoBehaviour, IPoolable
     public void OnSpawn()
     {
         GameEvents.Instance.OnBlockMoveUp += MoveUp;
+        GameEvents.Instance.OnBlockMoveDown += MoveDown;
         currentTransform = transform;
     }
 
     public void OnDespawn()
     {
         GameEvents.Instance.OnBlockMoveUp -= MoveUp;
+        GameEvents.Instance.OnBlockMoveDown += MoveDown;
     }
 
     #endregion
@@ -58,6 +60,13 @@ public class Block : MonoBehaviour, IPoolable
         }
     }
 
+    private void MoveDown(Vector2 calledPos, int step)
+    {
+        if (new Vector2((int)calledPos.x, (int)calledPos.y) == pos)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y - step, transform.position.z);
+        }
+    }
     public void FindLimitArea() // when block is first selected
     {
         if (isOnBoard)
@@ -111,7 +120,8 @@ public class Block : MonoBehaviour, IPoolable
                     Vector3 newPos = matchedTile.transform.position;
                     transform.position = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, currentTransform.position.z);
                     transform.parent = matchedTile.transform;
-                    //goi scan move down 
+                    BoardManager.Instance.ScanMoveDown(true);
+                    BoardManager.Instance.MoveUpNewRow();
                 }
                 else
                 {

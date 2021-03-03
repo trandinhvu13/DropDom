@@ -41,6 +41,12 @@ public class GameEvents : MonoBehaviour
         OnBlockMoveUp?.Invoke();
     }
     
+    public event Action<Vector2, int> OnBlockMoveDown; 
+    public void BlockMoveDown(Vector2 pos, int step)
+    {
+        OnBlockMoveDown?.Invoke(pos, step);
+    }
+    
 
     #endregion
     

@@ -234,7 +234,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void MoveUpNewRow() //move new row from under the board up on the board
+    public void MoveUpNewRow() //move new row from under the board up on the board
     {
         for (int x = 0; x < 8; x++) //change gridvalue array
         {
@@ -252,6 +252,7 @@ public class BoardManager : MonoBehaviour
         }
 
         GameEvents.Instance.BlockMoveUp();
+        ScanMoveDown(true);
         SpawnNewRow();
     }
 
@@ -330,7 +331,7 @@ public class BoardManager : MonoBehaviour
         return 0;
     }
 
-    public void ScanMoveDownArrayValue(bool isContinue)
+    public void ScanMoveDown(bool isContinue)
     {
         if (isContinue)
         {
@@ -384,17 +385,21 @@ public class BoardManager : MonoBehaviour
                 }
             }
 
-            ScanMoveDownArrayValue(isContinue);
+            ScanMoveDown(isContinue);
         }
         else
         {
             // done scan + execute move down (send message to block)
-
             //reset num of step array
+            DebugWholeArray(numOfStepDown);
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 10; y++)
                 {
+                    if (numOfStepDown[x, y] != 0)
+                    {
+                        GameEvents.Instance.BlockMoveDown(new Vector2(x,y),numOfStepDown[x, y]);
+                    }
                     numOfStepDown[x, y] = 0;
                 }
             }
@@ -406,7 +411,15 @@ public class BoardManager : MonoBehaviour
         void MoveDown(int x, int y, int length)
         {
             isContinue = true;
-            numOfStepDown[x, y + numOfScan]++;
+            if (numOfStepDown[x, y + numOfScan] != 0)
+            {
+                numOfStepDown[x, y + numOfScan]++;
+            }
+            else
+            {
+                numOfStepDown[x, y]++;
+            }
+           
             for (int i = 1; i <= length; i++)
             {
                 gridValue[x + i - 1, y] = 0;
