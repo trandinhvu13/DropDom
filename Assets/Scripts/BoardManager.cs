@@ -436,30 +436,15 @@ public class BoardManager : MonoBehaviour
 
     public void DragBlockFingerUp(Vector2 oldPos, Vector2 newPos, int length)
     {
-        // if (oldPos.x - newPos.x < 0) //drag sang phai
-        // {
-            for (int i = 0; i < length; i++)
-            {
-                gridValue[(int) oldPos.x + i, (int) oldPos.y] = 0;
-            }
-            for (int i = 1; i <= length; i++)
-            {
-                gridValue[(int) newPos.x + i - 1, (int) newPos.y] = length * 10 + i;
-            }
-      //  }
-        /*else //drag sang trai
+        for (int i = 0; i < length; i++)
         {
+            gridValue[(int) oldPos.x + i, (int) oldPos.y] = 0;
+        }
 
-            for (int i = 0; i < length; i++)
-            {
-                gridValue[(int) oldPos.x + i, (int) oldPos.y] = 0;
-            }
-            for (int i = 1; i <= length; i++)
-            {
-                gridValue[(int) newPos.x + i - 1, (int) newPos.y] = length * 10 + i;
-            }
-        }*/
-
+        for (int i = 1; i <= length; i++)
+        {
+            gridValue[(int) newPos.x + i - 1, (int) newPos.y] = length * 10 + i;
+        }
     }
 
     private void DebugLogArray(int[] array)
