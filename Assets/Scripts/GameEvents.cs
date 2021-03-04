@@ -51,7 +51,11 @@ public class GameEvents : MonoBehaviour
     {
         OnFindLimitArea?.Invoke();
     }
-    
+    public event Action<Vector2> OnBlockExplode; 
+    public void BlockExplode(Vector2 pos)
+    {
+        OnBlockExplode?.Invoke(pos);
+    }
 
     #endregion
     

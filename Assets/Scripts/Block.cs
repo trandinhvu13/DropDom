@@ -35,6 +35,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockMoveUp -= MoveUp;
         GameEvents.Instance.OnBlockMoveDown -= MoveDown;
         GameEvents.Instance.OnFindLimitArea -= FindLimitArea;
+        transform.parent = null;
         isOnBoard = false;
     }
 
@@ -79,6 +80,10 @@ public class Block : MonoBehaviour, IPoolable
         }
     }
 
+    private void Explode()
+    {
+        LeanPool.Despawn(gameObject);
+    }
     public void FindLimitArea() // when block is first selected
     {
         if (isOnBoard && pos.x < 8 && pos.y < 10)

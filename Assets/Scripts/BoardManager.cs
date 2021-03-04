@@ -204,7 +204,6 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        //DebugLogArray(lineValue);
         return lineValue;
     }
 
@@ -258,7 +257,6 @@ public class BoardManager : MonoBehaviour
 
     public int ReturnBlankLength(int x, int y, int blockLength, string dir)
     {
-        Debug.Log("x " + x + ", y: " + y + " blocklength " + blockLength);
         int blankLength = 0;
         if ((x == 0 && dir == "left") || (x == 7 && dir == "right"))
         {
@@ -402,7 +400,6 @@ public class BoardManager : MonoBehaviour
         {
             // done scan + execute move down (send message to block)
             //reset num of step array
-            DebugWholeArray(numOfStepDown);
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 10; y++)
@@ -417,14 +414,13 @@ public class BoardManager : MonoBehaviour
             }
 
             numOfScan = 0;
+           // ScanForFullRow();
             GameEvents.Instance.FindLimitArea();
-            Debug.Log("End Scan");
         }
 
         void MoveDown(int x, int y, int length)
         {
             isContinue = true;
-            Debug.Log("x: " + x + ", y: " + y + "numofscan: " + numOfScan);
             for (int i = 1; i <= length; i++)
             {
                 gridValue[x + i - 1, y] = 0;
@@ -474,6 +470,31 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void ScanForFullRow()
+    {
+        for (int y = 0; y < 10; y++)
+        {
+            bool isFoundFullRow = true;
+            for (int x = 0; x < 8; x++)
+            {
+                if (gridValue[x, y] == 0)
+                {
+                    isFoundFullRow = false;
+                }
+            }
+
+            if (isFoundFullRow)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    gridValue[i, y] = 0;
+                    GameEvents.Instance.BlockExplode(new Vector2(i,y));
+                }
+                ScanMoveDown(true);
+                
+            }
+        }
+    }
     private void DebugLogArray(int[] array)
     {
         string output = "";
