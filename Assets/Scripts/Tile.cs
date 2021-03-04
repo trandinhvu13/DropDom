@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Lean.Pool;
-
+using Shapes2D;
+using Random = UnityEngine.Random;
 
 public class Tile : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Tile : MonoBehaviour
     public Vector2 value = Vector2.zero; //x là độ dài block, y là thứ tự trong block
     [SerializeField] private GameObject[] blockPrefabs;
     [SerializeField] private bool isStandbyTile;
+    
     #endregion
 
     #region Mono
@@ -24,6 +26,7 @@ public class Tile : MonoBehaviour
 
     private void OnEnable()
     {
+
         GameEvents.Instance.OnSpawnNewBlock += SpawnBlock;
     }
 

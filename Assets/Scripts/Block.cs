@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Lean.Transition.Method;
 using Lean.Pool;
+using Shapes2D;
 using UnityEngine;
 using TMPro;
+using Random = UnityEngine.Random;
 
 public class Block : MonoBehaviour, IPoolable
 {
@@ -18,7 +20,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private int leftBlankLength = 0;
     [SerializeField] private int rightBlankLength = 0;
     [SerializeField] private TextMeshProUGUI posText;
-
+    [SerializeField] private Shape shape2d;
     #endregion
 
     #region Mono
@@ -29,6 +31,11 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockMoveDown += MoveDown;
         GameEvents.Instance.OnFindLimitArea += FindLimitArea;
         GameEvents.Instance.OnBlockExplode += Explode;
+        shape2d.settings.fillColor = new Color32(
+            (byte)Random.Range(0, 255),
+            (byte)Random.Range(0, 255),
+            (byte)Random.Range(0, 255),
+            255);
     }
 
     public void OnDespawn()
@@ -39,6 +46,11 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockExplode -= Explode;
         transform.parent = null;
         isOnBoard = false;
+    }
+
+    private void Awake()
+    {
+        shape2d = GetComponent<Shape>();
     }
 
     private void Update()
