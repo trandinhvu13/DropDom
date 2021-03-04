@@ -414,7 +414,7 @@ public class BoardManager : MonoBehaviour
             }
 
             numOfScan = 0;
-           // ScanForFullRow();
+            ScanForFullRow();
             GameEvents.Instance.FindLimitArea();
         }
 
