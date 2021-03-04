@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using Lean.Transition.Method;
 using Lean.Pool;
 using Shapes2D;
@@ -21,6 +22,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private int rightBlankLength = 0;
     [SerializeField] private TextMeshProUGUI posText;
     [SerializeField] private Shape shape2d;
+    [SerializeField] private bool isRainbow;
     #endregion
 
     #region Mono
