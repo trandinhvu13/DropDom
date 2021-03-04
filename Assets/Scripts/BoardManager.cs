@@ -258,6 +258,7 @@ public class BoardManager : MonoBehaviour
 
     public int ReturnBlankLength(int x, int y, int blockLength, string dir)
     {
+        Debug.Log("x " + x + ", y: " + y + " blocklength " + blockLength);
         int blankLength = 0;
         if ((x == 0 && dir == "left") || (x == 7 && dir == "right"))
         {
@@ -336,6 +337,7 @@ public class BoardManager : MonoBehaviour
         if (isContinue)
         {
             isContinue = false;
+            bool isFound = false;
             for (int y = 1; y < 10; y++)
             {
                 for (int x = 0; x < 8; x++)
@@ -347,6 +349,7 @@ public class BoardManager : MonoBehaviour
                             if (gridValue[x, y - 1] == 0)
                             {
                                 MoveDown(x, y, 1);
+                                isFound = true;
                             }
 
                             break;
@@ -356,6 +359,7 @@ public class BoardManager : MonoBehaviour
                             if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0)
                             {
                                 MoveDown(x, y, 2);
+                                isFound = true;
                             }
 
                             break;
@@ -366,6 +370,7 @@ public class BoardManager : MonoBehaviour
                                 gridValue[x + 2, y - 1] == 0)
                             {
                                 MoveDown(x, y, 3);
+                                isFound = true;
                             }
 
                             break;
@@ -377,12 +382,18 @@ public class BoardManager : MonoBehaviour
                                 gridValue[x + 3, y - 1] == 0)
                             {
                                 MoveDown(x, y, 4);
+                                isFound = true;
                             }
 
                             break;
                         }
                     }
                 }
+            }
+
+            if (isFound)
+            {
+                numOfScan++;
             }
 
             ScanMoveDown(isContinue);
@@ -398,19 +409,28 @@ public class BoardManager : MonoBehaviour
                 {
                     if (numOfStepDown[x, y] != 0)
                     {
-                        GameEvents.Instance.BlockMoveDown(new Vector2(x,y),numOfStepDown[x, y]);
+                        GameEvents.Instance.BlockMoveDown(new Vector2(x, y), numOfStepDown[x, y]);
                     }
+
                     numOfStepDown[x, y] = 0;
                 }
             }
 
             numOfScan = 0;
+            GameEvents.Instance.FindLimitArea();
             Debug.Log("End Scan");
         }
 
         void MoveDown(int x, int y, int length)
         {
             isContinue = true;
+            Debug.Log("x: " + x + ", y: " + y + "numofscan: " + numOfScan);
+            for (int i = 1; i <= length; i++)
+            {
+                gridValue[x + i - 1, y] = 0;
+                gridValue[x + i - 1, y - 1] = length * 10 + i;
+            }
+
             if (numOfStepDown[x, y + numOfScan] != 0)
             {
                 numOfStepDown[x, y + numOfScan]++;
@@ -419,14 +439,8 @@ public class BoardManager : MonoBehaviour
             {
                 numOfStepDown[x, y]++;
             }
-           
-            for (int i = 1; i <= length; i++)
-            {
-                gridValue[x + i - 1, y] = 0;
-                gridValue[x + i - 1, y - 1] = length * 10 + i;
-            }
 
-            numOfScan++;
+            // numOfScan++;
         }
     }
 
@@ -485,7 +499,7 @@ public class BoardManager : MonoBehaviour
     private void DebugWholeArray(int[,] array)
     {
         string output = "";
-        for (int y = 7; y >= 0; y--)
+        for (int y = 9; y >= 0; y--)
         {
             for (int x = 0; x < 8; x++)
             {

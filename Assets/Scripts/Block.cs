@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Lean.Transition.Method;
 using Lean.Pool;
 using UnityEngine;
+using TMPro;
 
 public class Block : MonoBehaviour, IPoolable
 {
@@ -16,7 +17,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private GameObject anchorPoint;
     [SerializeField] private int leftBlankLength = 0;
     [SerializeField] private int rightBlankLength = 0;
-    private Transform currentTransform;
+    [SerializeField] private TextMeshProUGUI posText;
 
     #endregion
 
@@ -26,13 +27,20 @@ public class Block : MonoBehaviour, IPoolable
     {
         GameEvents.Instance.OnBlockMoveUp += MoveUp;
         GameEvents.Instance.OnBlockMoveDown += MoveDown;
-        currentTransform = transform;
+        GameEvents.Instance.OnFindLimitArea += FindLimitArea;
     }
 
     public void OnDespawn()
     {
         GameEvents.Instance.OnBlockMoveUp -= MoveUp;
-        GameEvents.Instance.OnBlockMoveDown += MoveDown;
+        GameEvents.Instance.OnBlockMoveDown -= MoveDown;
+        GameEvents.Instance.OnFindLimitArea -= FindLimitArea;
+        isOnBoard = false;
+    }
+
+    private void Update()
+    {
+        posText.text = "(" + pos.x + ", " + pos.y + ")";
     }
 
     #endregion
@@ -55,21 +63,25 @@ public class Block : MonoBehaviour, IPoolable
             transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
-            currentTransform = transform;
-            FindLimitArea();
+            //FindLimitArea();
         }
     }
 
     private void MoveDown(Vector2 calledPos, int step)
     {
-        if (new Vector2((int)calledPos.x, (int)calledPos.y) == pos)
+        if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y - step, transform.position.z);
+            pos.y -= step;
+            Vector2 newPos = new Vector2(transform.position.x, transform.position.y - step);
+            transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);
+            transform.parent = null;
+            transform.parent = BoardManager.Instance.gridGameObjects[(int) newPos.x, (int) newPos.y].transform;
         }
     }
+
     public void FindLimitArea() // when block is first selected
     {
-        if (isOnBoard)
+        if (isOnBoard && pos.x < 8 && pos.y < 10)
         {
             int posX = (int) pos.x;
             int posY = (int) pos.y;
@@ -118,19 +130,20 @@ public class Block : MonoBehaviour, IPoolable
                 {
                     BoardManager.Instance.DragBlockFingerUp(oldPos, pos, blockLength);
                     Vector3 newPos = matchedTile.transform.position;
-                    transform.position = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, currentTransform.position.z);
+                    transform.position = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, -2);
                     transform.parent = matchedTile.transform;
                     BoardManager.Instance.ScanMoveDown(true);
                     BoardManager.Instance.MoveUpNewRow();
                 }
                 else
                 {
-                    transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform.position.z); //ve vi tri cu
+                    transform.position =
+                        new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
                 }
             }
             else
             {
-                transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, currentTransform.position.z); //ve vi tri cu
+                transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
             }
         }
     }

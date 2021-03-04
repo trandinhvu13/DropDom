@@ -166,10 +166,10 @@ public class BlockTranslate : MonoBehaviour
             position = new Vector3(tempPos.x, position.y, position.z);
             if (position.x < leftLimit)
             {
-                transform.position = new Vector2(leftLimit, position.y);
+                transform.position = new Vector3(leftLimit, position.y,-2);
             }else if (position.x > rightLimit)
             {
-                transform.position = new Vector2(rightLimit, position.y);
+                transform.position = new Vector3(rightLimit, position.y,-2);
             }
             else
             {

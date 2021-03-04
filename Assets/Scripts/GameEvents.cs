@@ -46,6 +46,11 @@ public class GameEvents : MonoBehaviour
     {
         OnBlockMoveDown?.Invoke(pos, step);
     }
+    public event Action OnFindLimitArea;
+    public void FindLimitArea()
+    {
+        OnFindLimitArea?.Invoke();
+    }
     
 
     #endregion
