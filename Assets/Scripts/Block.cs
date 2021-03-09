@@ -22,7 +22,8 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private int rightBlankLength = 0;
     [SerializeField] private TextMeshProUGUI posText;
     [SerializeField] private Shape shape2d;
-    [SerializeField] private bool isRainbow;
+    public bool isRainbow = false;
+    private List<Vector2> nearbyBlock = new List<Vector2>();
     #endregion
 
     #region Mono
@@ -38,6 +39,7 @@ public class Block : MonoBehaviour, IPoolable
             (byte)Random.Range(0, 255),
             (byte)Random.Range(0, 255),
             255);
+        
     }
 
     public void OnDespawn()
@@ -80,7 +82,19 @@ public class Block : MonoBehaviour, IPoolable
             transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
-            //FindLimitArea();
+            FindNearbyBlocks();
+            if (isRainbow)
+            {
+                Debug.Log("white");
+                shape2d.settings.fillColor = Color.white;
+            }
+            //debug nearby
+            // string output = "";
+            // for (int i = 0; i < nearbyBlock.Count; i++)
+            // {
+            //     output += nearbyBlock[i] + " ";
+            // }
+            // Debug.Log(output);
         }
     }
 
@@ -100,10 +114,49 @@ public class Block : MonoBehaviour, IPoolable
     {
         if (calledPos == pos)
         {
+            StartCoroutine(ExplodeCoroutine());
+        }
+
+        IEnumerator ExplodeCoroutine()
+        {
+            if (!isRainbow)
+            {
+                //nổ bt
+                //yield wait
+            }
+            else
+            {
+                Debug.Log(("highlight rainbow"));
+               // highlight rainbow
+               //nổ
+               for (int i = 0; i < nearbyBlock.Count; i++)
+               {
+                   Vector2 pos = nearbyBlock[i];
+                   GameEvents.Instance.BlockExplode(pos);
+               }
+               
+                //yield wait for explode animation
+                BoardManager.Instance.hasRainbowBlock = false;
+                nearbyBlock.Clear();
+            }
+            BoardManager.Instance.blockHasExplodedNum++;
             LeanPool.Despawn(gameObject);
+            yield return null;
         }
     }
 
+    private void FindNearbyBlocks()
+    {
+        if (isOnBoard && isRainbow)
+        {
+            nearbyBlock = BoardManager.Instance.GetNearbyBlocks(pos,blockLength);
+            if (nearbyBlock.Count == 0)
+            {
+                nearbyBlock.Add(new Vector2(-5,-5)); // not exist
+            }
+        }
+     
+    }
     public void FindLimitArea() // when block is first selected
     {
         if (isOnBoard && pos.x < 8 && pos.y < 10)
@@ -139,6 +192,7 @@ public class Block : MonoBehaviour, IPoolable
                     translateComponent.rightLimit = transform.position.x;
                 }
             }
+            
         }
     }
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -44,6 +45,8 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private GameObject standbyRow;
     [SerializeField] private int numOfScan = 0;
     [SerializeField] private float checkDistance;
+    public bool hasRainbowBlock = false;
+    public int blockHasExplodedNum = 0;
 
     #endregion
 
@@ -214,22 +217,49 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < newRow.Length; i++)
         {
             standbyRowValue[i] = newRow[i];
-            if (newRow[i] == 11)
+
+            int blockType = newRow[i] / 10;
+            int posInBlock = newRow[i] % 10;
+            if (posInBlock == 1)
             {
-                GameEvents.Instance.SpawnNewBlock(i, 1);
+                bool spawnRainbow = RandomBool();
+                GameEvents.Instance.SpawnNewBlock(i, blockType, spawnRainbow);
+            }
+            /*{
+                bool spawnRainbow = RandomBool();
+                GameEvents.Instance.SpawnNewBlock(i, 1, spawnRainbow);
             }
             else if (newRow[i] == 21)
             {
-                GameEvents.Instance.SpawnNewBlock(i, 2);
+                bool spawnRainbow = RandomBool();
+                GameEvents.Instance.SpawnNewBlock(i, 2, spawnRainbow);
             }
             else if (newRow[i] == 31)
             {
-                GameEvents.Instance.SpawnNewBlock(i, 3);
+                bool spawnRainbow = RandomBool();
+                GameEvents.Instance.SpawnNewBlock(i, 3, spawnRainbow);
             }
             else if (newRow[i] == 41)
             {
-                GameEvents.Instance.SpawnNewBlock(i, 4);
+                bool spawnRainbow = RandomBool();
+                GameEvents.Instance.SpawnNewBlock(i, 4, spawnRainbow);
+            }*/
+        }
+
+        bool RandomBool()
+        {
+            float ran = Random.value;
+
+            if (ran > 0.5f)
+            {
+                if (!hasRainbowBlock)
+                {
+                    hasRainbowBlock = true;
+                    return true;
+                }
             }
+
+            return false;
         }
     }
 
@@ -251,6 +281,7 @@ public class BoardManager : MonoBehaviour
         }
 
         GameEvents.Instance.BlockMoveUp();
+        //yield animation
         ScanMoveDown(true);
         SpawnNewRow();
     }
@@ -414,10 +445,12 @@ public class BoardManager : MonoBehaviour
             }
 
             numOfScan = 0;
+            blockHasExplodedNum = 0;
             ScanForFullRow();
             GameEvents.Instance.FindLimitArea();
         }
 
+        //move down logically
         void MoveDown(int x, int y, int length)
         {
             isContinue = true;
@@ -483,18 +516,91 @@ public class BoardManager : MonoBehaviour
                 }
             }
 
-            if (isFoundFullRow)
+            StartCoroutine(Explode(isFoundFullRow, y));
+        }
+
+        IEnumerator Explode(bool _isFoundFullRow, int _y)
+        {
+            if (_isFoundFullRow)
             {
+                int numOfBlockInRow = 0;
                 for (int i = 0; i < 8; i++)
                 {
-                    gridValue[i, y] = 0;
-                    GameEvents.Instance.BlockExplode(new Vector2(i,y));
+                    if (gridValue[i, _y] == 11 || gridValue[i, _y] == 21 || gridValue[i, _y] == 31 ||
+                        gridValue[i, _y] == 41)
+                    {
+                        numOfBlockInRow++;
+                    }
+
+                    gridValue[i, _y] = 0;
+                    GameEvents.Instance.BlockExplode(new Vector2(i, _y));
                 }
-                ScanMoveDown(true);
-                
+
+                while (blockHasExplodedNum < numOfBlockInRow)
+                {
+                    yield return null;
+                }
+
+                ScanMoveDown(true); // after an amount of time
             }
+
+            yield return null;
         }
     }
+
+    public List<Vector2> GetNearbyBlocks(Vector2 pos, int blockLength)
+    {
+        List<Vector2> nearbyList = new List<Vector2>();
+        for (int i = 0; i < blockLength; i++)
+        {
+            //check block above
+            if ((int) pos.y < 9)
+            {
+                int value = gridValue[(int) pos.x + i, (int) pos.y + 1];
+                if (value != 0 && value % 10 != 1)
+                {
+                    Vector2 originPosOfBlock = new Vector2((int) pos.x + i - (value % 10) + 1, (int) pos.y + 1);
+                    if (!nearbyList.Contains(originPosOfBlock))
+                    {
+                        nearbyList.Add(originPosOfBlock);
+                    }
+                }
+                else if (value % 10 == 1)
+                {
+                    Vector2 originPosOfBlock = new Vector2((int) pos.x + i, (int) pos.y + 1);
+                    if (!nearbyList.Contains(originPosOfBlock))
+                    {
+                        nearbyList.Add(originPosOfBlock);
+                    }
+                }
+            }
+
+            //check block below
+            if ((int) pos.y > 0)
+            {
+                int value = gridValue[(int) pos.x + i, (int) pos.y - 1];
+                if (value != 0 && value % 10 != 1)
+                {
+                    Vector2 originPosOfBlock = new Vector2((int) pos.x + i - (value % 10) + 1, (int) pos.y - 1);
+                    if (!nearbyList.Contains(originPosOfBlock))
+                    {
+                        nearbyList.Add(originPosOfBlock);
+                    }
+                }
+                else if (value % 10 == 1)
+                {
+                    Vector2 originPosOfBlock = new Vector2((int) pos.x + i, (int) pos.y - 1);
+                    if (!nearbyList.Contains(originPosOfBlock))
+                    {
+                        nearbyList.Add(originPosOfBlock);
+                    }
+                }
+            }
+        }
+
+        return nearbyList;
+    }
+
     private void DebugLogArray(int[] array)
     {
         string output = "";

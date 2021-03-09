@@ -25,10 +25,10 @@ public class GameEvents : MonoBehaviour
     #endregion
 
     #region Tile
-    public event Action<int, int> OnSpawnNewBlock; 
-    public void SpawnNewBlock(int pos, int blockType)
+    public event Action<int, int, bool> OnSpawnNewBlock; 
+    public void SpawnNewBlock(int pos, int blockType, bool isRainbow)
     {
-        OnSpawnNewBlock?.Invoke(pos, blockType);
+        OnSpawnNewBlock?.Invoke(pos, blockType, isRainbow);
     }
     
 

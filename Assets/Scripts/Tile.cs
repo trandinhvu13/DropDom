@@ -50,7 +50,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void SpawnBlock(int _pos, int _blockType)
+    private void SpawnBlock(int _pos, int _blockType, bool _isRainbow)
     {
         if (_pos == pos.x && isStandbyTile)
         {
@@ -76,7 +76,11 @@ public class Tile : MonoBehaviour
             Vector3 spawnPos = new Vector3(transform.position.x + spawnOffset, yPos,-2);
 
             GameObject block = LeanPool.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, transform);
-            block.GetComponent<Block>().pos = new Vector2(pos.x, -1);
+            
+            var blockScript= block.GetComponent<Block>();
+            
+            blockScript.pos = new Vector2(pos.x, -1);
+            blockScript.isRainbow = _isRainbow;
         }
     }
 
