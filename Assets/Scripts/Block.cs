@@ -50,6 +50,10 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockExplode -= Explode;
         transform.parent = null;
         isOnBoard = false;
+        if (isRainbow)
+        {
+            BoardManager.Instance.hasRainbowBlock = false;
+        }
     }
 
     private void Awake()
@@ -83,9 +87,9 @@ public class Block : MonoBehaviour, IPoolable
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
             FindNearbyBlocks();
+            //debug color
             if (isRainbow)
             {
-                Debug.Log("white");
                 shape2d.settings.fillColor = Color.white;
             }
             //debug nearby
@@ -132,6 +136,7 @@ public class Block : MonoBehaviour, IPoolable
                for (int i = 0; i < nearbyBlock.Count; i++)
                {
                    Vector2 pos = nearbyBlock[i];
+                   Debug.Log("explode block "+ pos);
                    GameEvents.Instance.BlockExplode(pos);
                }
                

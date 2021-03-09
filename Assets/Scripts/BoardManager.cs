@@ -47,6 +47,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private float checkDistance;
     public bool hasRainbowBlock = false;
     public int blockHasExplodedNum = 0;
+    [SerializeField] private float rainbowRandomRate;
 
     #endregion
 
@@ -225,6 +226,7 @@ public class BoardManager : MonoBehaviour
                 bool spawnRainbow = RandomBool();
                 GameEvents.Instance.SpawnNewBlock(i, blockType, spawnRainbow);
             }
+
             /*{
                 bool spawnRainbow = RandomBool();
                 GameEvents.Instance.SpawnNewBlock(i, 1, spawnRainbow);
@@ -249,11 +251,11 @@ public class BoardManager : MonoBehaviour
         bool RandomBool()
         {
             float ran = Random.value;
-
-            if (ran > 0.5f)
+            if (ran < rainbowRandomRate)
             {
                 if (!hasRainbowBlock)
                 {
+                    Debug.Log(ran);
                     hasRainbowBlock = true;
                     return true;
                 }
@@ -536,11 +538,15 @@ public class BoardManager : MonoBehaviour
                     GameEvents.Instance.BlockExplode(new Vector2(i, _y));
                 }
 
+                Debug.Log("block in rainbow row " + numOfBlockInRow);
                 while (blockHasExplodedNum < numOfBlockInRow)
                 {
+                    Debug.Log("wait");
                     yield return null;
                 }
 
+                yield return new WaitForSeconds(1);
+                Debug.Log("has explode " + blockHasExplodedNum);
                 ScanMoveDown(true); // after an amount of time
             }
 
