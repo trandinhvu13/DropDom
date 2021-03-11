@@ -539,6 +539,7 @@ public class BoardManager : MonoBehaviour
                 }
 
                 Debug.Log("block in rainbow row " + numOfBlockInRow);
+                //?
                 while (blockHasExplodedNum < numOfBlockInRow)
                 {
                     Debug.Log("wait");
