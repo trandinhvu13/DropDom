@@ -540,13 +540,13 @@ public class BoardManager : MonoBehaviour
 
                 Debug.Log("block in rainbow row " + numOfBlockInRow);
                 //?
-                while (blockHasExplodedNum < numOfBlockInRow)
-                {
-                    Debug.Log("wait");
-                    yield return null;
-                }
+                // while (blockHasExplodedNum < numOfBlockInRow)
+                // {
+                //     Debug.Log("wait");
+                //     yield return null;
+                // }
 
-                yield return new WaitForSeconds(1);
+               // yield return new WaitForSeconds(1);
                 Debug.Log("has explode " + blockHasExplodedNum);
                 ScanMoveDown(true); // after an amount of time
             }
