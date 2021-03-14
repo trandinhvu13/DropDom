@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
+using Lean.Common;
 using Lean.Transition.Method;
 using Lean.Pool;
 using Shapes2D;
@@ -24,6 +25,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private Shape shape2d;
     public bool isRainbow = false;
     private List<Vector2> nearbyBlock = new List<Vector2>();
+
     #endregion
 
     #region Mono
@@ -35,11 +37,10 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindLimitArea += FindLimitArea;
         GameEvents.Instance.OnBlockExplode += Explode;
         shape2d.settings.fillColor = new Color32(
-            (byte)Random.Range(0, 255),
-            (byte)Random.Range(0, 255),
-            (byte)Random.Range(0, 255),
+            (byte) Random.Range(0, 255),
+            (byte) Random.Range(0, 255),
+            (byte) Random.Range(0, 255),
             255);
-        
     }
 
     public void OnDespawn()
@@ -54,6 +55,8 @@ public class Block : MonoBehaviour, IPoolable
         {
             BoardManager.Instance.hasRainbowBlock = false;
         }
+
+        transform.localScale = new Vector3(blockLength, 1, 1);
     }
 
     private void Awake()
@@ -83,15 +86,23 @@ public class Block : MonoBehaviour, IPoolable
                 isOnBoard = true;
             }
 
-            transform.position = new Vector3(transform.position.x, transform.position.y + 1, -2);
+            Vector3 des = new Vector3(transform.position.x, transform.position.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
-            FindNearbyBlocks();
+
+            LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
+                .Instance.moveToTileTween).setOnComplete(() =>
+            {
+                FindNearbyBlocks();
+                FindLimitArea();
+            });
+
             //debug color
             if (isRainbow)
             {
-                shape2d.settings.fillColor = Color.white;
+                shape2d.settings.fillColor = Color.black;
             }
+
             //debug nearby
             // string output = "";
             // for (int i = 0; i < nearbyBlock.Count; i++)
@@ -108,9 +119,16 @@ public class Block : MonoBehaviour, IPoolable
         {
             pos.y -= step;
             Vector2 newPos = new Vector2(transform.position.x, transform.position.y - step);
-            transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);
+            Vector3 des = new Vector3(newPos.x, newPos.y, transform.position.z);
             transform.parent = null;
             transform.parent = BoardManager.Instance.gridGameObjects[(int) newPos.x, (int) newPos.y].transform;
+
+            LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
+                .Instance.moveToTileTween).setOnComplete(() =>
+            {
+                FindNearbyBlocks();
+                FindLimitArea();
+            });
         }
     }
 
@@ -125,27 +143,34 @@ public class Block : MonoBehaviour, IPoolable
         {
             if (!isRainbow)
             {
+                LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
+                    (AnimationManager.Instance.explodeTween).setOnComplete(() => { LeanPool.Despawn(gameObject); });
                 //nổ bt
                 //yield wait
             }
             else
             {
                 Debug.Log(("highlight rainbow"));
-               // highlight rainbow
-               //nổ
-               for (int i = 0; i < nearbyBlock.Count; i++)
-               {
-                   Vector2 pos = nearbyBlock[i];
-                   Debug.Log("explode block "+ pos);
-                   GameEvents.Instance.BlockExplode(pos);
-               }
-               
-                //yield wait for explode animation
-                BoardManager.Instance.hasRainbowBlock = false;
-                nearbyBlock.Clear();
+                // highlight rainbow
+                //nổ
+                LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
+                    (AnimationManager.Instance.explodeTween).setOnComplete(() =>
+                {
+                    for (int i = 0; i < nearbyBlock.Count; i++)
+                    {
+                        Vector2 pos = nearbyBlock[i];
+                        Debug.Log("explode block " + pos);
+                        GameEvents.Instance.BlockExplode(pos);
+                    }
+
+                    BoardManager.Instance.hasRainbowBlock = false;
+                    nearbyBlock.Clear();
+
+                    LeanPool.Despawn(gameObject);
+                });
             }
-            BoardManager.Instance.blockHasExplodedNum++;
-            LeanPool.Despawn(gameObject);
+
+            // BoardManager.Instance.blockHasExplodedNum++;
             yield return null;
         }
     }
@@ -154,14 +179,14 @@ public class Block : MonoBehaviour, IPoolable
     {
         if (isOnBoard && isRainbow)
         {
-            nearbyBlock = BoardManager.Instance.GetNearbyBlocks(pos,blockLength);
+            nearbyBlock = BoardManager.Instance.GetNearbyBlocks(pos, blockLength);
             if (nearbyBlock.Count == 0)
             {
-                nearbyBlock.Add(new Vector2(-5,-5)); // not exist
+                nearbyBlock.Add(new Vector2(-5, -5)); // not exist
             }
         }
-     
     }
+
     public void FindLimitArea() // when block is first selected
     {
         if (isOnBoard && pos.x < 8 && pos.y < 10)
@@ -197,7 +222,6 @@ public class Block : MonoBehaviour, IPoolable
                     translateComponent.rightLimit = transform.position.x;
                 }
             }
-            
         }
     }
 
@@ -214,20 +238,29 @@ public class Block : MonoBehaviour, IPoolable
                 {
                     BoardManager.Instance.DragBlockFingerUp(oldPos, pos, blockLength);
                     Vector3 newPos = matchedTile.transform.position;
-                    transform.position = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, -2);
-                    transform.parent = matchedTile.transform;
-                    BoardManager.Instance.ScanMoveDown(true);
-                    BoardManager.Instance.MoveUpNewRow();
+                    Vector3 des = new Vector3(newPos.x + (0.5f * (blockLength - 1)), newPos.y, -2);
+                    LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
+                        .Instance.moveToTileTween).setOnComplete(() =>
+                    {
+                        transform.parent = matchedTile.transform;
+                        BoardManager.Instance.hasMovedUp = false;
+                        BoardManager.Instance.ScanMoveDown(true);
+                        //BoardManager.Instance.MoveUpNewRow();
+                    });
                 }
                 else
                 {
-                    transform.position =
+                    Vector3 des =
                         new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
+                    LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
+                        .Instance.moveToTileTween);
                 }
             }
             else
             {
-                transform.position = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
+                Vector3 des = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
+                LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
+                    .Instance.moveToTileTween);
             }
         }
     }

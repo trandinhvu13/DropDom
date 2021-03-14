@@ -50,9 +50,9 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void SpawnBlock(int _pos, int _blockType, bool _isRainbow)
+    private void SpawnBlock(Vector2 _pos, int _blockType, bool _isRainbow)
     {
-        if (_pos == pos.x && isStandbyTile)
+        if (_pos == pos)
         {
             int yPos = (int)transform.position.y;
             GameObject prefabToSpawn = blockPrefabs[_blockType - 1];
@@ -79,7 +79,7 @@ public class Tile : MonoBehaviour
             
             var blockScript= block.GetComponent<Block>();
             
-            blockScript.pos = new Vector2(pos.x, -1);
+            blockScript.pos = new Vector2(pos.x, pos.y);
             blockScript.isRainbow = _isRainbow;
         }
     }

@@ -196,6 +196,8 @@ MonoBehaviour:
   leftBlankLength: 0
   rightBlankLength: 0
   posText: {fileID: 8828819435493884351}
+  shape2d: {fileID: 0}
+  isRainbow: 0
 --- !u!114 &1923544413323213716
 MonoBehaviour:
   m_ObjectHideFlags: 0

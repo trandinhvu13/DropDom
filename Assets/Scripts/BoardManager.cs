@@ -48,6 +48,7 @@ public class BoardManager : MonoBehaviour
     public bool hasRainbowBlock = false;
     public int blockHasExplodedNum = 0;
     [SerializeField] private float rainbowRandomRate;
+    public bool hasMovedUp = false;
 
     #endregion
 
@@ -98,6 +99,9 @@ public class BoardManager : MonoBehaviour
                 gridValue[x, y] = 0; //0 = blank
             }
         }
+
+        SpawnNewRow(0);
+        SpawnNewRow(1);
     }
 
     private int[] GenerateRow()
@@ -208,56 +212,43 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+
         return lineValue;
     }
 
-    private void SpawnNewRow() //spawn row below the board
+    private void SpawnNewRow(int y = -1) //spawn row below the board
     {
         int[] newRow = GenerateRow();
 
         for (int i = 0; i < newRow.Length; i++)
         {
-            standbyRowValue[i] = newRow[i];
+            if (y == -1)
+            {
+                standbyRowValue[i] = newRow[i];
+            }
 
             int blockType = newRow[i] / 10;
             int posInBlock = newRow[i] % 10;
             if (posInBlock == 1)
             {
                 bool spawnRainbow = RandomBool();
-                GameEvents.Instance.SpawnNewBlock(i, blockType, spawnRainbow);
+                GameEvents.Instance.SpawnNewBlock(new Vector2(i, y), blockType, spawnRainbow);
             }
-
-            /*{
-                bool spawnRainbow = RandomBool();
-                GameEvents.Instance.SpawnNewBlock(i, 1, spawnRainbow);
-            }
-            else if (newRow[i] == 21)
-            {
-                bool spawnRainbow = RandomBool();
-                GameEvents.Instance.SpawnNewBlock(i, 2, spawnRainbow);
-            }
-            else if (newRow[i] == 31)
-            {
-                bool spawnRainbow = RandomBool();
-                GameEvents.Instance.SpawnNewBlock(i, 3, spawnRainbow);
-            }
-            else if (newRow[i] == 41)
-            {
-                bool spawnRainbow = RandomBool();
-                GameEvents.Instance.SpawnNewBlock(i, 4, spawnRainbow);
-            }*/
         }
 
         bool RandomBool()
         {
-            float ran = Random.value;
-            if (ran < rainbowRandomRate)
+            if (y == -1)
             {
-                if (!hasRainbowBlock)
+                float ran = Random.value;
+                if (ran < rainbowRandomRate)
                 {
-                    Debug.Log(ran);
-                    hasRainbowBlock = true;
-                    return true;
+                    if (!hasRainbowBlock)
+                    {
+                        Debug.Log(ran);
+                        hasRainbowBlock = true;
+                        return true;
+                    }
                 }
             }
 
@@ -448,8 +439,8 @@ public class BoardManager : MonoBehaviour
 
             numOfScan = 0;
             blockHasExplodedNum = 0;
+
             ScanForFullRow();
-            GameEvents.Instance.FindLimitArea();
         }
 
         //move down logically
@@ -523,6 +514,7 @@ public class BoardManager : MonoBehaviour
 
         IEnumerator Explode(bool _isFoundFullRow, int _y)
         {
+            Debug.Log(_isFoundFullRow);
             if (_isFoundFullRow)
             {
                 int numOfBlockInRow = 0;
@@ -546,9 +538,17 @@ public class BoardManager : MonoBehaviour
                 //     yield return null;
                 // }
 
-               // yield return new WaitForSeconds(1);
+                // yield return new WaitForSeconds(1);
                 Debug.Log("has explode " + blockHasExplodedNum);
                 ScanMoveDown(true); // after an amount of time
+            }
+            else
+            {
+                if (hasMovedUp == false)
+                {
+                    hasMovedUp = true;
+                    MoveUpNewRow();
+                }
             }
 
             yield return null;
