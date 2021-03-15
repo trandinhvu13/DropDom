@@ -15,7 +15,7 @@ public class Block : MonoBehaviour, IPoolable
     #region Variable
 
     [SerializeField] private int blockLength;
-    [SerializeField] private bool isOnBoard = false;
+    [SerializeField] public bool isOnBoard = false;
     public Vector2 pos;
     [SerializeField] private BlockTranslate translateComponent;
     [SerializeField] private GameObject anchorPoint;
@@ -86,9 +86,10 @@ public class Block : MonoBehaviour, IPoolable
                 isOnBoard = true;
             }
 
-            Vector3 des = new Vector3(transform.position.x, transform.position.y + 1, -2);
+            Vector3 des = new Vector3(transform.position.x, pos.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
+//            Debug.Log("Block vi tri: " + pos + " y = " + pos.y);
 
             LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                 .Instance.moveToTileTween).setOnComplete(() =>
@@ -115,13 +116,14 @@ public class Block : MonoBehaviour, IPoolable
 
     private void MoveDown(Vector2 calledPos, int step)
     {
-        if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos)
+        if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos && pos.y > 0) 
         {
             pos.y -= step;
-            Vector2 newPos = new Vector2(transform.position.x, transform.position.y - step);
-            Vector3 des = new Vector3(newPos.x, newPos.y, transform.position.z);
+            Vector2 newPos = new Vector2(transform.position.x, pos.y);
+            Vector3 des = new Vector3(newPos.x, pos.y, transform.position.z);
             transform.parent = null;
-            transform.parent = BoardManager.Instance.gridGameObjects[(int) newPos.x, (int) newPos.y].transform;
+            Debug.Log(newPos);
+            transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y].transform;
 
             LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                 .Instance.moveToTileTween).setOnComplete(() =>

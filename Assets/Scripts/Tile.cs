@@ -14,7 +14,7 @@ public class Tile : MonoBehaviour
     public Vector2 value = Vector2.zero; //x là độ dài block, y là thứ tự trong block
     [SerializeField] private GameObject[] blockPrefabs;
     [SerializeField] private bool isStandbyTile;
-    
+
     #endregion
 
     #region Mono
@@ -26,7 +26,6 @@ public class Tile : MonoBehaviour
 
     private void OnEnable()
     {
-
         GameEvents.Instance.OnSpawnNewBlock += SpawnBlock;
     }
 
@@ -54,17 +53,19 @@ public class Tile : MonoBehaviour
     {
         if (_pos == pos)
         {
-            int yPos = (int)transform.position.y;
+            int yPos = (int) transform.position.y;
             GameObject prefabToSpawn = blockPrefabs[_blockType - 1];
             float spawnOffset = 0;
-        
+
             if (_blockType == 1)
             {
                 spawnOffset = 0;
-            }else if (_blockType == 2)
+            }
+            else if (_blockType == 2)
             {
                 spawnOffset = 0.5f;
-            }else if (_blockType == 3)
+            }
+            else if (_blockType == 3)
             {
                 spawnOffset = 1;
             }
@@ -73,14 +74,19 @@ public class Tile : MonoBehaviour
                 spawnOffset = 1.5f;
             }
 
-            Vector3 spawnPos = new Vector3(transform.position.x + spawnOffset, yPos,-2);
+            Vector3 spawnPos = new Vector3(transform.position.x + spawnOffset, yPos, -2);
 
             GameObject block = LeanPool.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, transform);
-            
-            var blockScript= block.GetComponent<Block>();
-            
+
+            var blockScript = block.GetComponent<Block>();
+
             blockScript.pos = new Vector2(pos.x, pos.y);
             blockScript.isRainbow = _isRainbow;
+            if (pos.y > -1)
+            {
+                blockScript.isOnBoard = true;
+            }
+            
         }
     }
 

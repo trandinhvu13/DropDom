@@ -49,6 +49,7 @@ public class BoardManager : MonoBehaviour
     public int blockHasExplodedNum = 0;
     [SerializeField] private float rainbowRandomRate;
     public bool hasMovedUp = false;
+    public bool isExplode = true;
 
     #endregion
 
@@ -69,6 +70,11 @@ public class BoardManager : MonoBehaviour
         if (Input.GetKeyDown((KeyCode.A)))
         {
             MoveUpNewRow();
+        }
+
+        if (Input.GetKeyDown((KeyCode.D)))
+        {
+            GameEvents.Instance.FindLimitArea();
         }
     }
 
@@ -100,8 +106,10 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        SpawnNewRow(0);
-        SpawnNewRow(1);
+        SpawnNewRow(null, 0);
+        SpawnNewRow(null, 1);
+        SpawnNewRow();
+        GameEvents.Instance.FindLimitArea();
     }
 
     private int[] GenerateRow()
@@ -216,15 +224,28 @@ public class BoardManager : MonoBehaviour
         return lineValue;
     }
 
-    private void SpawnNewRow(int y = -1) //spawn row below the board
+    private void SpawnNewRow(int[] row = null, int y = -1) //spawn row below the board
     {
-        int[] newRow = GenerateRow();
+        int[] newRow;
+        if (row == null)
+        {
+            newRow = GenerateRow();
+        }
+        else
+        {
+            newRow = row;
+        }
+
 
         for (int i = 0; i < newRow.Length; i++)
         {
             if (y == -1)
             {
                 standbyRowValue[i] = newRow[i];
+            }
+            else
+            {
+                gridValue[i, y] = newRow[i];
             }
 
             int blockType = newRow[i] / 10;
@@ -245,7 +266,6 @@ public class BoardManager : MonoBehaviour
                 {
                     if (!hasRainbowBlock)
                     {
-                        Debug.Log(ran);
                         hasRainbowBlock = true;
                         return true;
                     }
@@ -439,8 +459,8 @@ public class BoardManager : MonoBehaviour
 
             numOfScan = 0;
             blockHasExplodedNum = 0;
-
-            ScanForFullRow();
+            Invoke("ScanForFullRow", AnimationManager.Instance.moveDownTime);
+            // ScanForFullRow();
         }
 
         //move down logically
@@ -514,7 +534,7 @@ public class BoardManager : MonoBehaviour
 
         IEnumerator Explode(bool _isFoundFullRow, int _y)
         {
-            Debug.Log(_isFoundFullRow);
+            //          Debug.Log(_isFoundFullRow);
             if (_isFoundFullRow)
             {
                 int numOfBlockInRow = 0;
@@ -538,8 +558,8 @@ public class BoardManager : MonoBehaviour
                 //     yield return null;
                 // }
 
-                // yield return new WaitForSeconds(1);
-                Debug.Log("has explode " + blockHasExplodedNum);
+                yield return new WaitForSeconds(AnimationManager.Instance.explodeTime);
+                // Debug.Log("has explode " + blockHasExplodedNum);
                 ScanMoveDown(true); // after an amount of time
             }
             else
@@ -547,6 +567,7 @@ public class BoardManager : MonoBehaviour
                 if (hasMovedUp == false)
                 {
                     hasMovedUp = true;
+                    yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime);
                     MoveUpNewRow();
                 }
             }
