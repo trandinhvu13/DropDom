@@ -141,6 +141,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -196,6 +197,8 @@ MonoBehaviour:
   leftBlankLength: 0
   rightBlankLength: 0
   posText: {fileID: 1226054317737310225}
+  shape2d: {fileID: 0}
+  isRainbow: 0
 --- !u!114 &9006199561854317759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,7 +218,7 @@ MonoBehaviour:
     RequiredMouseButtons: 0
     RequiredSelectable: {fileID: -2250100685368341043}
   Camera: {fileID: 0}
-  Sensitivity: 1
+  Sensitivity: 1.22
   Damping: -1
   Inertia: 0
   remainingTranslation: {x: 0, y: 0, z: 0}
@@ -249,6 +252,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4181564426420443003}
+        m_TargetAssemblyTypeName: 
         m_MethodName: DragFingerUpToTile
         m_Mode: 1
         m_Arguments:
@@ -368,6 +372,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 200
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2163782639909395154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +450,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

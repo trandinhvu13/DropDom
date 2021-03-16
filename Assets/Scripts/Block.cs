@@ -42,6 +42,7 @@ public class Block : MonoBehaviour, IPoolable
             (byte) Random.Range(0, 255),
             (byte) Random.Range(0, 255),
             255);
+       FindLimitArea();
     }
 
     public void OnDespawn()
@@ -93,8 +94,8 @@ public class Block : MonoBehaviour, IPoolable
             pos.y++;
 //            Debug.Log("Block vi tri: " + pos + " y = " + pos.y);
 
-            LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
-                .Instance.moveToTileTween).setOnComplete(() =>
+            LeanTween.move(gameObject, des, AnimationManager.Instance.moveUpTime).setEase(AnimationManager
+                .Instance.moveUpTween).setOnComplete(() =>
             {
                 FindLimitArea();
             });
@@ -126,14 +127,14 @@ public class Block : MonoBehaviour, IPoolable
             transform.parent = null;
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y].transform;
 
-            LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
-                .Instance.moveToTileTween).setOnComplete(() =>
+            LeanTween.move(gameObject, des, AnimationManager.Instance.moveDownTime).setEase(AnimationManager
+                .Instance.moveDownTween).setOnComplete(() =>
             {
-
-                FindLimitArea();
+                
             });
         }
-    }
+        Invoke("FindLimitArea", AnimationManager.Instance.moveDownTime);
+    }   
 
     private void Explode(Vector2 calledPos)
     {
@@ -153,22 +154,27 @@ public class Block : MonoBehaviour, IPoolable
             }
             else
             {
-                Debug.Log(("highlight rainbow"));
+                FindNearbyBlocks();
                 // highlight rainbow
                 //nổ
+                for (int i = 0; i < nearbyBlock.Count; i++)
+                {
+                    Vector2 pos = nearbyBlock[i];
+                    if (pos != null && pos != new Vector2(-5, -5))
+                    {
+                       BoardManager.Instance.DeleteBlock(pos);
+                       GameEvents.Instance.BlockExplode(pos);
+                    }
+                   
+                }
+
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
                     (AnimationManager.Instance.explodeTween).setOnComplete(() =>
                 {
-                    for (int i = 0; i < nearbyBlock.Count; i++)
-                    {
-                        Vector2 pos = nearbyBlock[i];
-                        Debug.Log("explode block " + pos);
-                        GameEvents.Instance.BlockExplode(pos);
-                    }
-
+                    BoardManager.Instance.ScanMoveDown(true);
                     BoardManager.Instance.hasRainbowBlock = false;
                     nearbyBlock.Clear();
-                    BoardManager.Instance.ScanMoveDown(true);
+
                     LeanPool.Despawn(gameObject);
                 });
             }
@@ -232,6 +238,7 @@ public class Block : MonoBehaviour, IPoolable
     {
         if (translateComponent.enabled)
         {
+            BoardManager.Instance.canDrag = false;
             GameObject matchedTile = BoardManager.Instance.CheckDropPos(anchorPoint.transform, (int) pos.y);
             Vector2 oldPos = pos;
             if (matchedTile)
@@ -248,7 +255,6 @@ public class Block : MonoBehaviour, IPoolable
                         transform.parent = matchedTile.transform;
                         BoardManager.Instance.hasMovedUp = false;
                         BoardManager.Instance.ScanMoveDown(true);
-                        //BoardManager.Instance.MoveUpNewRow();
                     });
                 }
                 else
@@ -256,7 +262,10 @@ public class Block : MonoBehaviour, IPoolable
                     Vector3 des =
                         new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
                     LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
-                        .Instance.moveToTileTween);
+                        .Instance.moveToTileTween).setOnComplete(() =>
+                    {
+                        BoardManager.Instance.canDrag = true;
+                    });
                 }
             }
             else

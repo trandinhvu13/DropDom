@@ -141,6 +141,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -217,7 +218,7 @@ MonoBehaviour:
     RequiredMouseButtons: 0
     RequiredSelectable: {fileID: 6716011970573446828}
   Camera: {fileID: 0}
-  Sensitivity: 1
+  Sensitivity: 1.22
   Damping: -1
   Inertia: 0
   remainingTranslation: {x: 0, y: 0, z: 0}
@@ -251,6 +252,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 331532635759737284}
+        m_TargetAssemblyTypeName: 
         m_MethodName: DragFingerUpToTile
         m_Mode: 1
         m_Arguments:
@@ -370,6 +372,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 200
+  m_PresetInfoIsWorld: 0
 --- !u!114 &6181744115168006416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,6 +450,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

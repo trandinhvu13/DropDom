@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Xml.Schema;
 using TMPro;
 using UnityEngine;
@@ -50,6 +51,8 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private float rainbowRandomRate;
     public bool hasMovedUp = false;
     public bool isExplode = true;
+    [SerializeField] private bool isNewGame = true;
+    public bool canDrag = false;
 
     #endregion
 
@@ -64,12 +67,14 @@ public class BoardManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            DebugWholeArray(numOfStepDown);
+            Debug.Log("Pressed");
+            ScanMoveDown(true);
         }
 
         if (Input.GetKeyDown((KeyCode.A)))
         {
-            MoveUpNewRow();
+            StartCoroutine(MoveUpNewRow());
+
         }
 
         if (Input.GetKeyDown((KeyCode.D)))
@@ -106,10 +111,18 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+        //start new game
         SpawnNewRow(null, 0);
         SpawnNewRow(null, 1);
         SpawnNewRow();
-        GameEvents.Instance.FindLimitArea();
+        StartCoroutine(NewGameAction());
+
+        IEnumerator NewGameAction()
+        {
+            yield return new WaitForSeconds(0.5f);
+            ScanMoveDown(true);
+            GameEvents.Instance.FindLimitArea();
+        }
     }
 
     private int[] GenerateRow()
@@ -276,7 +289,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void MoveUpNewRow() //move new row from under the board up on the board
+    IEnumerator MoveUpNewRow() //move new row from under the board up on the board
     {
         for (int x = 0; x < 8; x++) //change gridvalue array
         {
@@ -294,9 +307,11 @@ public class BoardManager : MonoBehaviour
         }
 
         GameEvents.Instance.BlockMoveUp();
-        //yield animation
-        ScanMoveDown(true);
         SpawnNewRow();
+        yield return new WaitForSeconds(AnimationManager.Instance.moveUpTime);
+        ScanMoveDown(true);
+
+
     }
 
     public int ReturnBlankLength(int x, int y, int blockLength, string dir)
@@ -444,6 +459,7 @@ public class BoardManager : MonoBehaviour
         {
             // done scan + execute move down (send message to block)
             //reset num of step array
+            //GameEvents.Instance.FindNearbyBlocks();
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 10; y++)
@@ -459,8 +475,8 @@ public class BoardManager : MonoBehaviour
 
             numOfScan = 0;
             blockHasExplodedNum = 0;
+
             Invoke("ScanForFullRow", AnimationManager.Instance.moveDownTime);
-            // ScanForFullRow();
         }
 
         //move down logically
@@ -528,14 +544,12 @@ public class BoardManager : MonoBehaviour
                     isFoundFullRow = false;
                 }
             }
-
-            GameEvents.Instance.FindNearbyBlocks();
+            
             StartCoroutine(Explode(isFoundFullRow, y));
         }
 
         IEnumerator Explode(bool _isFoundFullRow, int _y)
         {
-            //          Debug.Log(_isFoundFullRow);
             if (_isFoundFullRow)
             {
                 int numOfBlockInRow = 0;
@@ -551,7 +565,7 @@ public class BoardManager : MonoBehaviour
                     GameEvents.Instance.BlockExplode(new Vector2(i, _y));
                 }
 
-                Debug.Log("block in rainbow row " + numOfBlockInRow);
+                //Debug.Log("block in rainbow row " + numOfBlockInRow);
                 //?
                 // while (blockHasExplodedNum < numOfBlockInRow)
                 // {
@@ -568,8 +582,25 @@ public class BoardManager : MonoBehaviour
                 if (hasMovedUp == false)
                 {
                     hasMovedUp = true;
-                    yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime);
-                    MoveUpNewRow();
+                    yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance
+                    .explodeTime);
+                    if (isNewGame)
+                    {
+                        isNewGame = false;
+                        canDrag = true;
+                        yield return null;
+                    }
+                    else
+                    {
+                        StartCoroutine(MoveUpNewRow());
+
+                    }
+                }
+                else
+                {
+                    yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance
+                        .explodeTime);
+                    canDrag = true;
                 }
             }
 
@@ -630,6 +661,16 @@ public class BoardManager : MonoBehaviour
         return nearbyList;
     }
 
+    public void DeleteBlock(Vector2 pos)
+    {
+        int value = gridValue[(int) pos.x, (int) pos.y];
+        int length = (int) value / 10;
+
+        for (int i = 0; i < length; i++)
+        {
+            gridValue[(int) pos.x + i, (int) pos.y] = 0;
+        }
+    }
     private void DebugLogArray(int[] array)
     {
         string output = "";
