@@ -36,6 +36,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockMoveDown += MoveDown;
         GameEvents.Instance.OnFindLimitArea += FindLimitArea;
         GameEvents.Instance.OnBlockExplode += Explode;
+        GameEvents.Instance.OnFindNearByBlocks += FindNearbyBlocks;
         shape2d.settings.fillColor = new Color32(
             (byte) Random.Range(0, 255),
             (byte) Random.Range(0, 255),
@@ -49,6 +50,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockMoveDown -= MoveDown;
         GameEvents.Instance.OnFindLimitArea -= FindLimitArea;
         GameEvents.Instance.OnBlockExplode -= Explode;
+        GameEvents.Instance.OnFindNearByBlocks -= FindNearbyBlocks;
         transform.parent = null;
         isOnBoard = false;
         if (isRainbow)
@@ -94,7 +96,6 @@ public class Block : MonoBehaviour, IPoolable
             LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                 .Instance.moveToTileTween).setOnComplete(() =>
             {
-                FindNearbyBlocks();
                 FindLimitArea();
             });
 
@@ -119,16 +120,16 @@ public class Block : MonoBehaviour, IPoolable
         if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos && pos.y > 0) 
         {
             pos.y -= step;
+          //  FindNearbyBlocks();
             Vector2 newPos = new Vector2(transform.position.x, pos.y);
             Vector3 des = new Vector3(newPos.x, pos.y, transform.position.z);
             transform.parent = null;
-            Debug.Log(newPos);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y].transform;
 
             LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                 .Instance.moveToTileTween).setOnComplete(() =>
             {
-                FindNearbyBlocks();
+
                 FindLimitArea();
             });
         }
@@ -167,7 +168,7 @@ public class Block : MonoBehaviour, IPoolable
 
                     BoardManager.Instance.hasRainbowBlock = false;
                     nearbyBlock.Clear();
-
+                    BoardManager.Instance.ScanMoveDown(true);
                     LeanPool.Despawn(gameObject);
                 });
             }

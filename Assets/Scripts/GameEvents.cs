@@ -51,6 +51,11 @@ public class GameEvents : MonoBehaviour
     {
         OnFindLimitArea?.Invoke();
     }
+    public event Action OnFindNearByBlocks;
+    public void FindNearbyBlocks()
+    {
+        OnFindNearByBlocks?.Invoke();
+    }
     public event Action<Vector2> OnBlockExplode; 
     public void BlockExplode(Vector2 pos)
     {

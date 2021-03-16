@@ -529,6 +529,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
 
+            GameEvents.Instance.FindNearbyBlocks();
             StartCoroutine(Explode(isFoundFullRow, y));
         }
 
