@@ -21,7 +21,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private GameObject anchorPoint;
     [SerializeField] private int leftBlankLength = 0;
     [SerializeField] private int rightBlankLength = 0;
-    [SerializeField] private TextMeshProUGUI posText;
+    //[SerializeField] private TextMeshProUGUI posText;
     [SerializeField] private Shape shape2d;
     public bool isRainbow = false;
     private List<Vector2> nearbyBlock = new List<Vector2>();
@@ -69,7 +69,7 @@ public class Block : MonoBehaviour, IPoolable
 
     private void Update()
     {
-        posText.text = "(" + pos.x + ", " + pos.y + ")";
+       // posText.text = "(" + pos.x + ", " + pos.y + ")";
     }
 
     #endregion
@@ -98,6 +98,7 @@ public class Block : MonoBehaviour, IPoolable
                 .Instance.moveUpTween).setOnComplete(() =>
             {
                 FindLimitArea();
+                FindNearbyBlocks();
             });
 
             //debug color
@@ -121,7 +122,7 @@ public class Block : MonoBehaviour, IPoolable
         if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos && pos.y > 0) 
         {
             pos.y -= step;
-          //  FindNearbyBlocks();
+          //FindNearbyBlocks();
             Vector2 newPos = new Vector2(transform.position.x, pos.y);
             Vector3 des = new Vector3(newPos.x, pos.y, transform.position.z);
             transform.parent = null;
@@ -145,6 +146,8 @@ public class Block : MonoBehaviour, IPoolable
 
         IEnumerator ExplodeCoroutine()
         {
+            shape2d.settings.fillColor = Color.green;
+
             if (!isRainbow)
             {
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase

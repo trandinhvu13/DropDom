@@ -74,7 +74,6 @@ public class BoardManager : MonoBehaviour
         if (Input.GetKeyDown((KeyCode.A)))
         {
             StartCoroutine(MoveUpNewRow());
-
         }
 
         if (Input.GetKeyDown((KeyCode.D)))
@@ -310,8 +309,6 @@ public class BoardManager : MonoBehaviour
         SpawnNewRow();
         yield return new WaitForSeconds(AnimationManager.Instance.moveUpTime);
         ScanMoveDown(true);
-
-
     }
 
     public int ReturnBlankLength(int x, int y, int blockLength, string dir)
@@ -476,7 +473,8 @@ public class BoardManager : MonoBehaviour
             numOfScan = 0;
             blockHasExplodedNum = 0;
 
-            Invoke("ScanForFullRow", AnimationManager.Instance.moveDownTime);
+            StartCoroutine(ScanForFullRow());
+            //Invoke("ScanForFullRow", AnimationManager.Instance.moveDownTime);
         }
 
         //move down logically
@@ -532,77 +530,88 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void ScanForFullRow()
+    IEnumerator ScanForFullRow()
     {
+        yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime);
+        bool isFoundFullRow = false;
+        List<int> fullRows = new List<int>();
+
         for (int y = 0; y < 10; y++)
         {
-            bool isFoundFullRow = true;
+            bool isRowFull = true;
             for (int x = 0; x < 8; x++)
             {
                 if (gridValue[x, y] == 0)
                 {
-                    isFoundFullRow = false;
+                    isRowFull = false;
                 }
             }
-            
-            StartCoroutine(Explode(isFoundFullRow, y));
+
+            if (isRowFull)
+            {
+                fullRows.Add(y);
+                isFoundFullRow = true;
+            }
         }
 
-        IEnumerator Explode(bool _isFoundFullRow, int _y)
+        if (isFoundFullRow)
         {
-            if (_isFoundFullRow)
+            for (int i = 0; i < fullRows.Count; i++)
             {
-                int numOfBlockInRow = 0;
-                for (int i = 0; i < 8; i++)
-                {
-                    if (gridValue[i, _y] == 11 || gridValue[i, _y] == 21 || gridValue[i, _y] == 31 ||
-                        gridValue[i, _y] == 41)
-                    {
-                        numOfBlockInRow++;
-                    }
-
-                    gridValue[i, _y] = 0;
-                    GameEvents.Instance.BlockExplode(new Vector2(i, _y));
-                }
-
-                //Debug.Log("block in rainbow row " + numOfBlockInRow);
-                //?
-                // while (blockHasExplodedNum < numOfBlockInRow)
-                // {
-                //     Debug.Log("wait");
-                //     yield return null;
-                // }
-
-                yield return new WaitForSeconds(AnimationManager.Instance.explodeTime);
-                // Debug.Log("has explode " + blockHasExplodedNum);
-                ScanMoveDown(true); // after an amount of time
+                StartCoroutine(Explode(fullRows[i]));
             }
-            else
+        }
+        else
+        {
+            //Debug.Log("a");
+            if (hasMovedUp == false)
             {
-                if (hasMovedUp == false)
+                hasMovedUp = true;
+                // yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance.explodeTime);
+                if (isNewGame)
                 {
-                    hasMovedUp = true;
-                    yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance
-                    .explodeTime);
-                    if (isNewGame)
-                    {
-                        isNewGame = false;
-                        canDrag = true;
-                        yield return null;
-                    }
-                    else
-                    {
-                        StartCoroutine(MoveUpNewRow());
-
-                    }
+                    isNewGame = false;
+                    canDrag = true;
+                    yield return null;
                 }
                 else
                 {
-                    yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance
-                        .explodeTime);
-                    canDrag = true;
+                    StartCoroutine(MoveUpNewRow());
                 }
             }
+            else
+            {
+                //yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance.explodeTime);
+                canDrag = true;
+            }
+        }
+
+        IEnumerator Explode(int _y)
+        {
+            int numOfBlockInRow = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                if (gridValue[i, _y] == 11 || gridValue[i, _y] == 21 || gridValue[i, _y] == 31 ||
+                    gridValue[i, _y] == 41)
+                {
+                    numOfBlockInRow++;
+                }
+
+                gridValue[i, _y] = 0;
+                GameEvents.Instance.BlockExplode(new Vector2(i, _y));
+            }
+
+            //Debug.Log("block in rainbow row " + numOfBlockInRow);
+            //?
+            // while (blockHasExplodedNum < numOfBlockInRow)
+            // {
+            //     Debug.Log("wait");
+            //     yield return null;
+            // }
+
+            yield return new WaitForSeconds(AnimationManager.Instance.explodeTime);
+            // Debug.Log("has explode " + blockHasExplodedNum);
+            ScanMoveDown(true); // after an amount of time
 
             yield return null;
         }
@@ -671,6 +680,7 @@ public class BoardManager : MonoBehaviour
             gridValue[(int) pos.x + i, (int) pos.y] = 0;
         }
     }
+
     private void DebugLogArray(int[] array)
     {
         string output = "";
