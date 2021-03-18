@@ -20,7 +20,9 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private BlockTranslate translateComponent;
     [SerializeField] private GameObject anchorPoint;
     [SerializeField] private int leftBlankLength = 0;
+
     [SerializeField] private int rightBlankLength = 0;
+
     //[SerializeField] private TextMeshProUGUI posText;
     [SerializeField] private Shape shape2d;
     public bool isRainbow = false;
@@ -42,7 +44,7 @@ public class Block : MonoBehaviour, IPoolable
             (byte) Random.Range(0, 255),
             (byte) Random.Range(0, 255),
             255);
-       FindLimitArea();
+        FindLimitArea();
     }
 
     public void OnDespawn()
@@ -67,11 +69,6 @@ public class Block : MonoBehaviour, IPoolable
         shape2d = GetComponent<Shape>();
     }
 
-    private void Update()
-    {
-       // posText.text = "(" + pos.x + ", " + pos.y + ")";
-    }
-
     #endregion
 
     #region Methods
@@ -92,7 +89,6 @@ public class Block : MonoBehaviour, IPoolable
             Vector3 des = new Vector3(transform.position.x, pos.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
             pos.y++;
-//            Debug.Log("Block vi tri: " + pos + " y = " + pos.y);
 
             LeanTween.move(gameObject, des, AnimationManager.Instance.moveUpTime).setEase(AnimationManager
                 .Instance.moveUpTween).setOnComplete(() =>
@@ -104,40 +100,36 @@ public class Block : MonoBehaviour, IPoolable
             //debug color
             if (isRainbow)
             {
+                BoardManager.Instance.rainbowPos = pos;
                 shape2d.settings.fillColor = Color.black;
             }
-
-            //debug nearby
-            // string output = "";
-            // for (int i = 0; i < nearbyBlock.Count; i++)
-            // {
-            //     output += nearbyBlock[i] + " ";
-            // }
-            // Debug.Log(output);
         }
     }
 
     private void MoveDown(Vector2 calledPos, int step)
     {
-        if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos && pos.y > 0) 
+        if (new Vector2((int) calledPos.x, (int) calledPos.y) == pos && pos.y > 0)
         {
             pos.y -= step;
-          //FindNearbyBlocks();
+
+            if (isRainbow)
+            {
+                BoardManager.Instance.rainbowPos = pos;
+            }
+            
             Vector2 newPos = new Vector2(transform.position.x, pos.y);
             Vector3 des = new Vector3(newPos.x, pos.y, transform.position.z);
             transform.parent = null;
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y].transform;
 
             LeanTween.move(gameObject, des, AnimationManager.Instance.moveDownTime).setEase(AnimationManager
-                .Instance.moveDownTween).setOnComplete(() =>
-            {
-                
-            });
+                .Instance.moveDownTween).setOnComplete(() => { });
         }
-        Invoke("FindLimitArea", AnimationManager.Instance.moveDownTime);
-    }   
 
-    private void Explode(Vector2 calledPos)
+        Invoke("FindLimitArea", AnimationManager.Instance.moveDownTime);
+    }
+
+    private void Explode(Vector2 calledPos, bool hasFullRowRainbow)
     {
         if (calledPos == pos)
         {
@@ -148,6 +140,11 @@ public class Block : MonoBehaviour, IPoolable
         {
             shape2d.settings.fillColor = Color.green;
 
+            if (hasFullRowRainbow)
+            {
+                yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
+            }
+            
             if (!isRainbow)
             {
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
@@ -165,10 +162,9 @@ public class Block : MonoBehaviour, IPoolable
                     Vector2 pos = nearbyBlock[i];
                     if (pos != null && pos != new Vector2(-5, -5))
                     {
-                       BoardManager.Instance.DeleteBlock(pos);
-                       GameEvents.Instance.BlockExplode(pos);
+                        BoardManager.Instance.DeleteBlock(pos);
+                        GameEvents.Instance.BlockExplode(pos,false);
                     }
-                   
                 }
 
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
@@ -265,10 +261,7 @@ public class Block : MonoBehaviour, IPoolable
                     Vector3 des =
                         new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
                     LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
-                        .Instance.moveToTileTween).setOnComplete(() =>
-                    {
-                        BoardManager.Instance.canDrag = true;
-                    });
+                        .Instance.moveToTileTween).setOnComplete(() => { BoardManager.Instance.canDrag = true; });
                 }
             }
             else

@@ -40,5 +40,7 @@ public class AnimationManager : MonoBehaviour
         public LeanTweenType moveToTileTween;
         public float explodeTime;
         public LeanTweenType explodeTween;
+        public float rainbowExplodeTime;
+
         #endregion
 }

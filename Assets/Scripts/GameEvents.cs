@@ -56,10 +56,10 @@ public class GameEvents : MonoBehaviour
     {
         OnFindNearByBlocks?.Invoke();
     }
-    public event Action<Vector2> OnBlockExplode; 
-    public void BlockExplode(Vector2 pos)
+    public event Action<Vector2, bool> OnBlockExplode; 
+    public void BlockExplode(Vector2 pos, bool hasFullRowRainbow)
     {
-        OnBlockExplode?.Invoke(pos);
+        OnBlockExplode?.Invoke(pos, hasFullRowRainbow);
     }
 
     #endregion

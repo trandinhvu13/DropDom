@@ -53,6 +53,8 @@ public class BoardManager : MonoBehaviour
     public bool isExplode = true;
     [SerializeField] private bool isNewGame = true;
     public bool canDrag = false;
+    private int timeHasCheckFullRow = 0;
+    public Vector2 rainbowPos;
 
     #endregion
 
@@ -118,7 +120,7 @@ public class BoardManager : MonoBehaviour
 
         IEnumerator NewGameAction()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
             ScanMoveDown(true);
             GameEvents.Instance.FindLimitArea();
         }
@@ -265,6 +267,10 @@ public class BoardManager : MonoBehaviour
             if (posInBlock == 1)
             {
                 bool spawnRainbow = RandomBool();
+                if (spawnRainbow)
+                {
+                    rainbowPos = new Vector2(i, y);
+                }
                 GameEvents.Instance.SpawnNewBlock(new Vector2(i, y), blockType, spawnRainbow);
             }
         }
@@ -553,7 +559,7 @@ public class BoardManager : MonoBehaviour
                 isFoundFullRow = true;
             }
         }
-
+        
         if (isFoundFullRow)
         {
             for (int i = 0; i < fullRows.Count; i++)
@@ -563,11 +569,9 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            //Debug.Log("a");
             if (hasMovedUp == false)
             {
                 hasMovedUp = true;
-                // yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance.explodeTime);
                 if (isNewGame)
                 {
                     isNewGame = false;
@@ -581,7 +585,6 @@ public class BoardManager : MonoBehaviour
             }
             else
             {
-                //yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime+ AnimationManager.Instance.explodeTime);
                 canDrag = true;
             }
         }
@@ -589,28 +592,22 @@ public class BoardManager : MonoBehaviour
         IEnumerator Explode(int _y)
         {
             int numOfBlockInRow = 0;
+            bool hasFullRowRainbow = hasRainbowBlock && _y == rainbowPos.y;
+
             for (int i = 0; i < 8; i++)
             {
-                if (gridValue[i, _y] == 11 || gridValue[i, _y] == 21 || gridValue[i, _y] == 31 ||
-                    gridValue[i, _y] == 41)
-                {
-                    numOfBlockInRow++;
-                }
-
                 gridValue[i, _y] = 0;
-                GameEvents.Instance.BlockExplode(new Vector2(i, _y));
+                GameEvents.Instance.BlockExplode(new Vector2(i, _y),hasFullRowRainbow);
             }
 
-            //Debug.Log("block in rainbow row " + numOfBlockInRow);
-            //?
-            // while (blockHasExplodedNum < numOfBlockInRow)
-            // {
-            //     Debug.Log("wait");
-            //     yield return null;
-            // }
+            if (hasFullRowRainbow)
+            {
+                Debug.Log("wait for rainbow animation");
+                yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
+            }
 
             yield return new WaitForSeconds(AnimationManager.Instance.explodeTime);
-            // Debug.Log("has explode " + blockHasExplodedNum);
+
             ScanMoveDown(true); // after an amount of time
 
             yield return null;
