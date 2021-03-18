@@ -20,7 +20,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private BlockTranslate translateComponent;
     [SerializeField] private GameObject anchorPoint;
     [SerializeField] private int leftBlankLength = 0;
-
+    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private int rightBlankLength = 0;
 
     //[SerializeField] private TextMeshProUGUI posText;
@@ -39,6 +39,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindLimitArea += FindLimitArea;
         GameEvents.Instance.OnBlockExplode += Explode;
         GameEvents.Instance.OnFindNearByBlocks += FindNearbyBlocks;
+        GameEvents.Instance.OnRainbowBlockAnimation += StartRainbowAnimation;
         shape2d.settings.fillColor =
             BoardManager.Instance.blockColors[Random.Range(0, BoardManager.Instance.blockColors.Length)];
         FindLimitArea();
@@ -51,6 +52,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindLimitArea -= FindLimitArea;
         GameEvents.Instance.OnBlockExplode -= Explode;
         GameEvents.Instance.OnFindNearByBlocks -= FindNearbyBlocks;
+        GameEvents.Instance.OnRainbowBlockAnimation -= StartRainbowAnimation;
         transform.parent = null;
         isOnBoard = false;
         if (isRainbow)
@@ -135,12 +137,11 @@ public class Block : MonoBehaviour, IPoolable
 
         IEnumerator ExplodeCoroutine()
         {
-           
-
             if (hasFullRowRainbow)
             {
                 yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
             }
+
             shape2d.settings.fillColor = Color.white;
             if (!isRainbow)
             {
@@ -261,6 +262,28 @@ public class Block : MonoBehaviour, IPoolable
                 Vector3 des = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
                 LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                     .Instance.moveToTileTween);
+            }
+        }
+    }
+
+    public void StartRainbowAnimation(Vector2 _pos)
+    {
+        if (pos == _pos)
+        {
+            Debug.Log("rainbow anim");
+            StartCoroutine(Blink(AnimationManager.Instance.rainbowExplodeTime));
+
+            IEnumerator Blink(float waitTime)
+            {
+                Color32 tempColor = shape2d.settings.fillColor;
+                float endTime = Time.time + waitTime;
+                while (Time.time < endTime)
+                {
+                    spriteRenderer.enabled = false;
+                    yield return new WaitForSeconds(0.1f);
+                    spriteRenderer.enabled = true;
+                    yield return new WaitForSeconds(0.1f);
+                }
             }
         }
     }

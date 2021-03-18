@@ -61,7 +61,11 @@ public class GameEvents : MonoBehaviour
     {
         OnBlockExplode?.Invoke(pos, hasFullRowRainbow);
     }
-
+    public event Action<Vector2> OnRainbowBlockAnimation; 
+    public void RainbowBlockAnimation(Vector2 pos)
+    {
+        OnRainbowBlockAnimation?.Invoke(pos);
+    }
     #endregion
     
 }

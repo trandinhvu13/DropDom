@@ -53,6 +53,7 @@ public class BoardManager : MonoBehaviour
     public bool canDrag = false;
     public Vector2 rainbowPos;
     public Color32[] blockColors;
+    public bool canMoveDown = true;
 
     #endregion
 
@@ -393,6 +394,11 @@ public class BoardManager : MonoBehaviour
 
     public void ScanMoveDown(bool isContinue)
     {
+        if (!canMoveDown)
+        {
+            return;
+        }
+
         if (isContinue)
         {
             isContinue = false;
@@ -591,8 +597,30 @@ public class BoardManager : MonoBehaviour
 
         IEnumerator Explode(int _y)
         {
-            int numOfBlockInRow = 0;
-            bool hasFullRowRainbow = hasRainbowBlock && _y == rainbowPos.y;
+            bool hasFullRowRainbow = false;
+
+            if (hasRainbowBlock && _y == rainbowPos.y)
+            {
+                hasFullRowRainbow = true;
+                List<Vector2> nearbyBlocks = GetNearbyBlocks(rainbowPos, (int) gridValue[(int) rainbowPos.x,
+                    (int) rainbowPos.y] / 10);
+
+                for (int i = 0; i < nearbyBlocks.Count; i++)
+                {
+                    Debug.Log(nearbyBlocks[i]);
+                    GameEvents.Instance.RainbowBlockAnimation(nearbyBlocks[i]);
+                }
+
+                for (int i = 0; i < 8; i++)
+                {
+                    if (gridValue[i, (int)rainbowPos.y] == 11 || gridValue[i, (int)rainbowPos.y] == 21 ||
+                        gridValue[i, (int)rainbowPos.y] == 31 || gridValue[i, (int)rainbowPos.y] == 41)
+                    {
+                        GameEvents.Instance.RainbowBlockAnimation(new Vector2(i,rainbowPos.y));
+                    }
+                    
+                }
+            }
 
             for (int i = 0; i < 8; i++)
             {
@@ -602,8 +630,9 @@ public class BoardManager : MonoBehaviour
 
             if (hasFullRowRainbow)
             {
-                Debug.Log("wait for rainbow animation");
+                canMoveDown = false;
                 yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
+                canMoveDown = true;
             }
 
             yield return new WaitForSeconds(AnimationManager.Instance.explodeTime);

@@ -164,6 +164,7 @@ MonoBehaviour:
   translateComponent: {fileID: -7248031898072347155}
   anchorPoint: {fileID: 6543756962243678405}
   leftBlankLength: 0
+  spriteRenderer: {fileID: 6543756961069141354}
   rightBlankLength: 0
   shape2d: {fileID: 0}
   isRainbow: 0
