@@ -99,7 +99,7 @@ MonoBehaviour:
     _lineSize: 0.1
     _obsoleteNumSides: -1
     _outlineColor: {r: 1, g: 1, b: 1, a: 1}
-    _outlineSize: 0.03
+    _outlineSize: 0.1
     _pathSegments:
     - p0: {x: -0.3, y: 0, z: 0}
       p1: {x: 0, y: 0, z: 0}
@@ -113,12 +113,12 @@ MonoBehaviour:
     - {x: 0.0000000059624403, y: -0.5}
     - {x: 0.43301278, y: -0.24999988}
     - {x: 0.4330127, y: 0.25000003}
-    _roundness: 0.33
-    _roundnessBottomLeft: 0.33
-    _roundnessBottomRight: 0.33
+    _roundness: 0.6
+    _roundnessBottomLeft: 0.6
+    _roundnessBottomRight: 0.6
     _roundnessPerCorner: 0
-    _roundnessTopLeft: 0.33
-    _roundnessTopRight: 0.33
+    _roundnessTopLeft: 0.6
+    _roundnessTopRight: 0.6
     _shapeType: 2
     _startAngle: 0
     _triangleOffset: 0.5
@@ -216,7 +216,7 @@ MonoBehaviour:
     RequiredMouseButtons: 0
     RequiredSelectable: {fileID: 6716011970573446828}
   Camera: {fileID: 0}
-  Sensitivity: 1.22
+  Sensitivity: 1.25
   Damping: -1
   Inertia: 0
   remainingTranslation: {x: 0, y: 0, z: 0}

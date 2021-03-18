@@ -39,11 +39,8 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindLimitArea += FindLimitArea;
         GameEvents.Instance.OnBlockExplode += Explode;
         GameEvents.Instance.OnFindNearByBlocks += FindNearbyBlocks;
-        shape2d.settings.fillColor = new Color32(
-            (byte) Random.Range(0, 255),
-            (byte) Random.Range(0, 255),
-            (byte) Random.Range(0, 255),
-            255);
+        shape2d.settings.fillColor =
+            BoardManager.Instance.blockColors[Random.Range(0, BoardManager.Instance.blockColors.Length)];
         FindLimitArea();
     }
 
@@ -116,7 +113,7 @@ public class Block : MonoBehaviour, IPoolable
             {
                 BoardManager.Instance.rainbowPos = pos;
             }
-            
+
             Vector2 newPos = new Vector2(transform.position.x, pos.y);
             Vector3 des = new Vector3(newPos.x, pos.y, transform.position.z);
             transform.parent = null;
@@ -138,32 +135,28 @@ public class Block : MonoBehaviour, IPoolable
 
         IEnumerator ExplodeCoroutine()
         {
-            shape2d.settings.fillColor = Color.green;
+           
 
             if (hasFullRowRainbow)
             {
                 yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
             }
-            
+            shape2d.settings.fillColor = Color.white;
             if (!isRainbow)
             {
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
                     (AnimationManager.Instance.explodeTween).setOnComplete(() => { LeanPool.Despawn(gameObject); });
-                //nổ bt
-                //yield wait
             }
             else
             {
                 FindNearbyBlocks();
-                // highlight rainbow
-                //nổ
                 for (int i = 0; i < nearbyBlock.Count; i++)
                 {
                     Vector2 pos = nearbyBlock[i];
                     if (pos != null && pos != new Vector2(-5, -5))
                     {
                         BoardManager.Instance.DeleteBlock(pos);
-                        GameEvents.Instance.BlockExplode(pos,false);
+                        GameEvents.Instance.BlockExplode(pos, false);
                     }
                 }
 
@@ -178,7 +171,6 @@ public class Block : MonoBehaviour, IPoolable
                 });
             }
 
-            // BoardManager.Instance.blockHasExplodedNum++;
             yield return null;
         }
     }

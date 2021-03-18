@@ -47,14 +47,12 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private int numOfScan = 0;
     [SerializeField] private float checkDistance;
     public bool hasRainbowBlock = false;
-    public int blockHasExplodedNum = 0;
     [SerializeField] private float rainbowRandomRate;
     public bool hasMovedUp = false;
-    public bool isExplode = true;
     [SerializeField] private bool isNewGame = true;
     public bool canDrag = false;
-    private int timeHasCheckFullRow = 0;
     public Vector2 rainbowPos;
+    public Color32[] blockColors;
 
     #endregion
 
@@ -62,7 +60,7 @@ public class BoardManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        /*if (Input.GetKeyDown(KeyCode.Space))
         {
             DebugWholeArray(gridValue);
         }
@@ -81,7 +79,7 @@ public class BoardManager : MonoBehaviour
         if (Input.GetKeyDown((KeyCode.D)))
         {
             GameEvents.Instance.FindLimitArea();
-        }
+        }*/
     }
 
     #endregion
@@ -271,6 +269,7 @@ public class BoardManager : MonoBehaviour
                 {
                     rainbowPos = new Vector2(i, y);
                 }
+
                 GameEvents.Instance.SpawnNewBlock(new Vector2(i, y), blockType, spawnRainbow);
             }
         }
@@ -477,10 +476,8 @@ public class BoardManager : MonoBehaviour
             }
 
             numOfScan = 0;
-            blockHasExplodedNum = 0;
 
             StartCoroutine(ScanForFullRow());
-            //Invoke("ScanForFullRow", AnimationManager.Instance.moveDownTime);
         }
 
         //move down logically
@@ -501,8 +498,6 @@ public class BoardManager : MonoBehaviour
             {
                 numOfStepDown[x, y]++;
             }
-
-            // numOfScan++;
         }
     }
 
@@ -559,7 +554,7 @@ public class BoardManager : MonoBehaviour
                 isFoundFullRow = true;
             }
         }
-        
+
         if (isFoundFullRow)
         {
             for (int i = 0; i < fullRows.Count; i++)
@@ -585,6 +580,11 @@ public class BoardManager : MonoBehaviour
             }
             else
             {
+                if (IsBoardEmpty())
+                {
+                    StartCoroutine(MoveUpNewRow());
+                }
+
                 canDrag = true;
             }
         }
@@ -597,7 +597,7 @@ public class BoardManager : MonoBehaviour
             for (int i = 0; i < 8; i++)
             {
                 gridValue[i, _y] = 0;
-                GameEvents.Instance.BlockExplode(new Vector2(i, _y),hasFullRowRainbow);
+                GameEvents.Instance.BlockExplode(new Vector2(i, _y), hasFullRowRainbow);
             }
 
             if (hasFullRowRainbow)
@@ -678,7 +678,20 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void DebugLogArray(int[] array)
+    public bool IsBoardEmpty()
+    {
+        for (int x = 1; x < 8; x++)
+        {
+            if (gridValue[x, 0] != 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /*private void DebugLogArray(int[] array)
     {
         string output = "";
         for (int i = 0; i < array.Length; i++)
@@ -714,7 +727,7 @@ public class BoardManager : MonoBehaviour
         }
 
         Debug.Log(output);
-    }
+    }*/
 
     #endregion
 }
