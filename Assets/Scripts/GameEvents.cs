@@ -30,6 +30,16 @@ public class GameEvents : MonoBehaviour
     {
         OnSpawnNewBlock?.Invoke(pos, blockType, isRainbow);
     }
+    public event Action<int> OnHighlightBlock; 
+    public void HighlightBlock(int x)
+    {
+        OnHighlightBlock?.Invoke(x);
+    }
+    public event Action<int> OnDehighlightBlock; 
+    public void DehighlightBlock(int x)
+    {
+        OnDehighlightBlock?.Invoke(x);
+    }
     
 
     #endregion
@@ -65,6 +75,11 @@ public class GameEvents : MonoBehaviour
     public void RainbowBlockAnimation(Vector2 pos)
     {
         OnRainbowBlockAnimation?.Invoke(pos);
+    }
+    public event Action<Vector2> OnChangeToRainbow; 
+    public void ChangeToRainbow(Vector2 pos)
+    {
+        OnChangeToRainbow?.Invoke(pos);
     }
     #endregion
     

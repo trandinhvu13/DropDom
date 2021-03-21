@@ -23,10 +23,12 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private int rightBlankLength = 0;
 
-    //[SerializeField] private TextMeshProUGUI posText;
+    private IEnumerator HighlightRoutine;
     [SerializeField] private Shape shape2d;
     public bool isRainbow = false;
     private List<Vector2> nearbyBlock = new List<Vector2>();
+
+    private int currentHighlightPos;
 
     #endregion
 
@@ -40,6 +42,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockExplode += Explode;
         GameEvents.Instance.OnFindNearByBlocks += FindNearbyBlocks;
         GameEvents.Instance.OnRainbowBlockAnimation += StartRainbowAnimation;
+        GameEvents.Instance.OnChangeToRainbow += ChangeToRainbow;
         shape2d.settings.fillColor =
             BoardManager.Instance.blockColors[Random.Range(0, BoardManager.Instance.blockColors.Length)];
         FindLimitArea();
@@ -53,6 +56,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnBlockExplode -= Explode;
         GameEvents.Instance.OnFindNearByBlocks -= FindNearbyBlocks;
         GameEvents.Instance.OnRainbowBlockAnimation -= StartRainbowAnimation;
+        GameEvents.Instance.OnChangeToRainbow -= ChangeToRainbow;
         transform.parent = null;
         isOnBoard = false;
         if (isRainbow)
@@ -166,6 +170,7 @@ public class Block : MonoBehaviour, IPoolable
                 {
                     BoardManager.Instance.ScanMoveDown(true);
                     BoardManager.Instance.hasRainbowBlock = false;
+                    BoardManager.Instance.rainbowPos = new Vector2(-5, -5);
                     nearbyBlock.Clear();
 
                     LeanPool.Despawn(gameObject);
@@ -245,6 +250,8 @@ public class Block : MonoBehaviour, IPoolable
                         .Instance.moveToTileTween).setOnComplete(() =>
                     {
                         transform.parent = matchedTile.transform;
+                        DehighlightAllBlock();
+                        StopCoroutine(HighlightRoutine);
                         BoardManager.Instance.hasMovedUp = false;
                         BoardManager.Instance.ScanMoveDown(true);
                     });
@@ -254,14 +261,23 @@ public class Block : MonoBehaviour, IPoolable
                     Vector3 des =
                         new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
                     LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
-                        .Instance.moveToTileTween).setOnComplete(() => { BoardManager.Instance.canDrag = true; });
+                        .Instance.moveToTileTween).setOnComplete(() =>
+                    {
+                        BoardManager.Instance.canDrag = true;
+                        DehighlightAllBlock();
+                        StopCoroutine(HighlightRoutine);
+                    });
                 }
             }
             else
             {
                 Vector3 des = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
                 LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
-                    .Instance.moveToTileTween);
+                    .Instance.moveToTileTween).setOnComplete(() =>
+                {
+                    DehighlightAllBlock();
+                    StopCoroutine(HighlightRoutine);
+                });
             }
         }
     }
@@ -270,7 +286,7 @@ public class Block : MonoBehaviour, IPoolable
     {
         if (pos == _pos)
         {
-            Debug.Log("rainbow anim");
+            //Debug.Log("rainbow anim");
             StartCoroutine(Blink(AnimationManager.Instance.rainbowExplodeTime));
 
             IEnumerator Blink(float waitTime)
@@ -285,6 +301,68 @@ public class Block : MonoBehaviour, IPoolable
                     yield return new WaitForSeconds(0.1f);
                 }
             }
+        }
+    }
+
+    public void OnBlockSelected()
+    {
+        if (pos.y < 0)
+        {
+            return;
+        }
+
+        currentHighlightPos = (int) pos.x;
+        HighlightBlock((int) pos.x);
+        HighlightRoutine = Highlight();
+        StartCoroutine(HighlightRoutine);
+    }
+
+    public void OnBlockDeselected()
+    {
+    }
+
+    IEnumerator Highlight()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(GameManager.Instance.updateInterval);
+            GameObject matchedTile = BoardManager.Instance.CheckDropPos(anchorPoint.transform, (int) pos.y);
+            if (matchedTile)
+            {
+                int tileScriptPos = (int) matchedTile.gameObject.GetComponent<Tile>().pos.x;
+                if (tileScriptPos != currentHighlightPos)
+                {
+                    currentHighlightPos = tileScriptPos;
+                    DehighlightAllBlock();
+                    HighlightBlock(currentHighlightPos);
+                }
+            }
+        }
+    }
+
+    private void HighlightBlock(int x)
+    {
+        DehighlightAllBlock();
+        for (int i = 0; i < blockLength; i++)
+        {
+            GameEvents.Instance.HighlightBlock(x + i);
+        }
+    }
+
+    private void DehighlightAllBlock()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            GameEvents.Instance.DehighlightBlock(i);
+        }
+    }
+
+    private void ChangeToRainbow(Vector2 _pos)
+    {
+        if (_pos == pos)
+        {
+            isRainbow = true;
+            shape2d.settings.fillColor = Color.black;
         }
     }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lean.Pool;
 using Shapes2D;
+using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 
 public class Tile : MonoBehaviour
@@ -14,6 +15,10 @@ public class Tile : MonoBehaviour
     public Vector2 value = Vector2.zero; //x là độ dài block, y là thứ tự trong block
     [SerializeField] private GameObject[] blockPrefabs;
     [SerializeField] private bool isStandbyTile;
+    public Shape shape2d;
+    private bool isHighlighted = false;
+    [SerializeField] private Color32 normalColor;
+    [SerializeField] private Color32 highlightedColor;
 
     #endregion
 
@@ -24,14 +29,22 @@ public class Tile : MonoBehaviour
         SetUpPos();
     }
 
+    private void Update()
+    {
+    }
+
     private void OnEnable()
     {
         GameEvents.Instance.OnSpawnNewBlock += SpawnBlock;
+        GameEvents.Instance.OnHighlightBlock += ChangeToHighlightColor;
+        GameEvents.Instance.OnDehighlightBlock += ChangeToNormalColor;
     }
 
     private void OnDisable()
     {
         GameEvents.Instance.OnSpawnNewBlock -= SpawnBlock;
+        GameEvents.Instance.OnHighlightBlock -= ChangeToHighlightColor;
+        GameEvents.Instance.OnDehighlightBlock -= ChangeToNormalColor;
     }
 
     #endregion
@@ -86,7 +99,32 @@ public class Tile : MonoBehaviour
             {
                 blockScript.isOnBoard = true;
             }
-            
+        }
+    }
+
+    public void ChangeToHighlightColor(int x)
+    {
+        if (pos.y != -1)
+        {
+            if ((int) pos.x != x) return;
+            if (!isHighlighted)
+            {
+                isHighlighted = true;
+                shape2d.settings.fillColor = highlightedColor;
+            }  
+        }
+    }
+
+    public void ChangeToNormalColor(int x)
+    {
+        if (pos.y != -1)
+        {
+            if ((int) pos.x != x) return;
+            if (isHighlighted)
+            {
+                isHighlighted = false;
+                shape2d.settings.fillColor = normalColor;
+            }  
         }
     }
 

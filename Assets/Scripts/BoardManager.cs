@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
 using System.Xml.Schema;
+using Shapes2D;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -61,11 +62,12 @@ public class BoardManager : MonoBehaviour
 
     private void Update()
     {
-        /*if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             DebugWholeArray(gridValue);
         }
 
+/*
         if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("Pressed");
@@ -93,6 +95,7 @@ public class BoardManager : MonoBehaviour
         {
             GameObject o;
             Vector2 tempPos = (o = Child.gameObject).GetComponent<Tile>().pos;
+            Child.gameObject.GetComponent<Tile>().shape2d = Child.gameObject.GetComponent<Tile>().GetComponent<Shape>();
             gridGameObjects[(int) tempPos.x, (int) tempPos.y] = o;
         }
 
@@ -103,25 +106,59 @@ public class BoardManager : MonoBehaviour
             standbyRowGameObjects[x] = Child.gameObject;
         }
 
-        for (int x = 0; x < 8; x++)
+        rainbowPos = GameManager.Instance.savedRainbowPos;
+        if (rainbowPos != new Vector2(-5, -5))
         {
-            for (int y = 0; y < 10; y++)
-            {
-                gridValue[x, y] = 0; //0 = blank
-            }
+            hasRainbowBlock = true;
         }
 
-        //start new game
-        SpawnNewRow(null, 0);
-        SpawnNewRow(null, 1);
-        SpawnNewRow();
+        if (GameManager.Instance.isNewGame)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 10; y++)
+                {
+                    gridValue[x, y] = 0; //0 = blank
+                }
+            }
+
+            //set up cho tutorial
+            SpawnNewRow(null, 0);
+            SpawnNewRow(null, 1);
+            SpawnNewRow();
+        }
+        else
+        {
+            gridValue = GameManager.Instance.savedGridValue;
+            standbyRowValue = GameManager.Instance.savedStandbyRow;
+            for (int y = 0; y < 10; y++)
+            {
+                int[] row = new int[8];
+                for (int x = 0; x < 8; x++)
+                {
+                    row[x] = gridValue[x, y];
+                }
+
+                SpawnNewRow(row, y);
+            }
+
+            SpawnNewRow(standbyRowValue, -1);
+
+
+            GameEvents.Instance.ChangeToRainbow(rainbowPos);
+        }
+
         StartCoroutine(NewGameAction());
+
+        //start new game
+
 
         IEnumerator NewGameAction()
         {
             yield return new WaitForSeconds(0.2f);
             ScanMoveDown(true);
             GameEvents.Instance.FindLimitArea();
+            GameManager.Instance.isNewGame = false;
         }
     }
 
@@ -561,6 +598,15 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < fullRows.Count; i++)
+        {
+            if (fullRows[i] == rainbowPos.y)
+            {
+                fullRows.Clear();
+                fullRows.Add((int) rainbowPos.y);
+            }
+        }
+
         if (isFoundFullRow)
         {
             for (int i = 0; i < fullRows.Count; i++)
@@ -595,6 +641,7 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+        // them arg
         IEnumerator Explode(int _y)
         {
             bool hasFullRowRainbow = false;
@@ -607,18 +654,17 @@ public class BoardManager : MonoBehaviour
 
                 for (int i = 0; i < nearbyBlocks.Count; i++)
                 {
-                    Debug.Log(nearbyBlocks[i]);
+//                    Debug.Log(nearbyBlocks[i]);
                     GameEvents.Instance.RainbowBlockAnimation(nearbyBlocks[i]);
                 }
 
                 for (int i = 0; i < 8; i++)
                 {
-                    if (gridValue[i, (int)rainbowPos.y] == 11 || gridValue[i, (int)rainbowPos.y] == 21 ||
-                        gridValue[i, (int)rainbowPos.y] == 31 || gridValue[i, (int)rainbowPos.y] == 41)
+                    if (gridValue[i, (int) rainbowPos.y] == 11 || gridValue[i, (int) rainbowPos.y] == 21 ||
+                        gridValue[i, (int) rainbowPos.y] == 31 || gridValue[i, (int) rainbowPos.y] == 41)
                     {
-                        GameEvents.Instance.RainbowBlockAnimation(new Vector2(i,rainbowPos.y));
+                        GameEvents.Instance.RainbowBlockAnimation(new Vector2(i, rainbowPos.y));
                     }
-                    
                 }
             }
 
@@ -741,7 +787,7 @@ public class BoardManager : MonoBehaviour
 
         Debug.Log(output);
     }
-
+*/
     private void DebugWholeArray(int[,] array)
     {
         string output = "";
@@ -756,7 +802,7 @@ public class BoardManager : MonoBehaviour
         }
 
         Debug.Log(output);
-    }*/
+    }
 
     #endregion
 }
