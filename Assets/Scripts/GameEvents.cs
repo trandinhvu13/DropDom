@@ -82,5 +82,14 @@ public class GameEvents : MonoBehaviour
         OnChangeToRainbow?.Invoke(pos);
     }
     #endregion
-    
+
+    #region Hint
+
+    public event Action OnStartHintScan;
+    public void HintScan()
+    {
+        OnStartHintScan?.Invoke();
+    }
+
+    #endregion
 }

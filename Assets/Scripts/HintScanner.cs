@@ -27,13 +27,15 @@ public class HintScanner : MonoBehaviour
 
     private void OnEnable()
     {
+        GameEvents.Instance.OnStartHintScan += CheckForHint;
     }
 
     private void OnDisable()
     {
+        GameEvents.Instance.OnStartHintScan -= CheckForHint;
     }
 
-    IEnumerator CheckForHint()
+    private void CheckForHint()
     {
         //scan grid
         gridValueDuplicate = BoardManager.Instance.gridValue;
@@ -64,10 +66,15 @@ public class HintScanner : MonoBehaviour
         //check each moveable block
         for (int i = 0; i < moveableBlocks.Count; i++)
         {
-            //simulate drop
+            if (SimulateDrop(moveableBlocks[i]))
+            {
+                //call hint event after
+                //use wait until for user select;
+                
+                break;
+            }
         }
-
-        yield return null;
+        
     }
 
     private bool SimulateDrop(MoveableBlock block)
@@ -101,7 +108,7 @@ public class HintScanner : MonoBehaviour
                 }
             }
         }
-        
+
         //if left blanks no answer -> right blanks
         if (!hasHint)
         {
