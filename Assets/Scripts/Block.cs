@@ -14,21 +14,26 @@ public class Block : MonoBehaviour, IPoolable
 {
     #region Variable
 
+    //logic
     [SerializeField] private int blockLength;
     [SerializeField] public bool isOnBoard = false;
     public Vector2 pos;
     [SerializeField] private BlockTranslate translateComponent;
     [SerializeField] private GameObject anchorPoint;
     [SerializeField] private int leftBlankLength = 0;
-    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private int rightBlankLength = 0;
-
-    private IEnumerator HighlightRoutine;
-    [SerializeField] private Shape shape2d;
     public bool isRainbow = false;
     private List<Vector2> nearbyBlock = new List<Vector2>();
-
     private int currentHighlightPos;
+
+    //visual
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer ghostSpriteRenderer;
+    private IEnumerator HighlightRoutine;
+    [SerializeField] private Shape shape2d;
+    [SerializeField] private GameObject ghostGameObject;
+    [SerializeField] private Shape ghostShape2d;
+    [SerializeField] private byte ghostAlpha;
 
     #endregion
 
@@ -45,7 +50,10 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnChangeToRainbow += ChangeToRainbow;
         shape2d.settings.fillColor =
             BoardManager.Instance.blockColors[Random.Range(0, BoardManager.Instance.blockColors.Length)];
+        Color32 blockColor = shape2d.settings.fillColor;
+        ghostShape2d.settings.fillColor = new Color32(blockColor.r, blockColor.g, blockColor.b, ghostAlpha);
         FindLimitArea();
+        ghostGameObject.SetActive(false);
     }
 
     public void OnDespawn()
@@ -69,7 +77,6 @@ public class Block : MonoBehaviour, IPoolable
 
     private void Awake()
     {
-        shape2d = GetComponent<Shape>();
     }
 
     #endregion
@@ -105,6 +112,8 @@ public class Block : MonoBehaviour, IPoolable
             {
                 BoardManager.Instance.rainbowPos = pos;
                 shape2d.settings.fillColor = Color.black;
+                Color32 blockColor = shape2d.settings.fillColor;
+                ghostShape2d.settings.fillColor = new Color32(blockColor.r, blockColor.g, blockColor.b, ghostAlpha);
             }
         }
     }
@@ -310,15 +319,10 @@ public class Block : MonoBehaviour, IPoolable
         {
             return;
         }
-
         currentHighlightPos = (int) pos.x;
         HighlightBlock((int) pos.x);
         HighlightRoutine = Highlight();
         StartCoroutine(HighlightRoutine);
-    }
-
-    public void OnBlockDeselected()
-    {
     }
 
     IEnumerator Highlight()
@@ -363,8 +367,23 @@ public class Block : MonoBehaviour, IPoolable
         {
             isRainbow = true;
             shape2d.settings.fillColor = Color.black;
+            Color32 blockColor = shape2d.settings.fillColor;
+            ghostShape2d.settings.fillColor = new Color32(blockColor.r, blockColor.g, blockColor.b, ghostAlpha);
         }
     }
 
+    public void ShowGhost()
+    {
+        ghostGameObject.SetActive(true);
+        ghostGameObject.transform.parent = null;
+    }
+    
+    public void HideGhost()
+    {
+        ghostGameObject.transform.parent = gameObject.transform;
+        ghostGameObject.transform.localPosition = Vector3.zero;
+        ghostGameObject.SetActive(false);
+        
+    }
     #endregion
 }
