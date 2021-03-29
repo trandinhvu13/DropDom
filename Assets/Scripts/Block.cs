@@ -319,6 +319,11 @@ public class Block : MonoBehaviour, IPoolable
         {
             return;
         }
+
+        if (leftBlankLength == 0 && rightBlankLength == 0)
+        {
+            return;
+        }
         currentHighlightPos = (int) pos.x;
         HighlightBlock((int) pos.x);
         HighlightRoutine = Highlight();

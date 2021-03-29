@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -35,10 +36,26 @@ public class HintScanner : MonoBehaviour
         GameEvents.Instance.OnStartHintScan -= CheckForHint;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            CheckForHint();
+        }
+    }
+
     private void CheckForHint()
     {
         //scan grid
-        gridValueDuplicate = BoardManager.Instance.gridValue;
+
+        for (int x = 0; x < 8; x++)
+        {
+            for (int y = 0; y < 10; y++)
+            {
+                gridValueDuplicate[x, y] = BoardManager.Instance.gridValue[x, y];
+            }
+        }
+
         for (int x = 0; x < 8; x++)
         {
             for (int y = 0; y < 10; y++)
@@ -68,19 +85,24 @@ public class HintScanner : MonoBehaviour
         {
             if (SimulateDrop(moveableBlocks[i]))
             {
+                Debug.Log(hint.pos);
+                Debug.Log(hint.dir);
+                Debug.Log(hint.step);
                 //call hint event after
                 //use wait until for user select;
-                
+
                 break;
             }
         }
-        
+
+        moveableBlocks.Clear();
     }
 
     private bool SimulateDrop(MoveableBlock block)
     {
         bool hasHint = false;
-        int[,] grid = gridValueDuplicate;
+
+
         Vector2 oldPos = block.pos;
 
         //check left blank
@@ -88,6 +110,16 @@ public class HintScanner : MonoBehaviour
         {
             for (int step = 1; step <= block.leftBlank; step++)
             {
+                int[,] grid = new int[8, 10];
+                for (int x = 0; x < 8; x++)
+                {
+                    for (int y = 0; y < 10; y++)
+                    {
+                        grid[x, y] = gridValueDuplicate[x, y];
+                    }
+                }
+
+                //Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move left " + step + " steps");
                 for (int i = 0; i < block.blockLength; i++)
                 {
                     grid[(int) oldPos.x + i, (int) oldPos.y] = 0;
@@ -101,7 +133,7 @@ public class HintScanner : MonoBehaviour
                 if (ScanMoveDown(grid, true))
                 {
                     hint.dir = "left";
-                    hint.pos = new Vector2((int) oldPos.x - step, (int) oldPos.y);
+                    hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y);
                     hint.step = step;
                     hasHint = true;
                     break;
@@ -114,8 +146,18 @@ public class HintScanner : MonoBehaviour
         {
             if (block.rightBlank > 0)
             {
-                for (int step = 1; step <= block.leftBlank; step++)
+                for (int step = 1; step <= block.rightBlank; step++)
                 {
+                    int[,] grid = new int[8, 10];
+                    for (int x = 0; x < 8; x++)
+                    {
+                        for (int y = 0; y < 10; y++)
+                        {
+                            grid[x, y] = gridValueDuplicate[x, y];
+                        }
+                    }
+
+                    //Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move right " + step + " steps");
                     for (int i = 0; i < block.blockLength; i++)
                     {
                         grid[(int) oldPos.x + i, (int) oldPos.y] = 0;
@@ -128,8 +170,8 @@ public class HintScanner : MonoBehaviour
 
                     if (ScanMoveDown(grid, true))
                     {
-                        hint.dir = "left";
-                        hint.pos = new Vector2((int) oldPos.x - step, (int) oldPos.y);
+                        hint.dir = "right";
+                        hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y);
                         hint.step = step;
                         hasHint = true;
                         break;
@@ -144,19 +186,18 @@ public class HintScanner : MonoBehaviour
     public bool ScanMoveDown(int[,] gridValue, bool isContinue)
     {
         bool isFoundFullRow = false;
-        if (isContinue)
-        {
-            isContinue = false;
 
-            for (int y = 1; y < 10; y++)
+        for (int y = 1; y < 10; y++)
+        {
+            for (int x = 0; x < 8; x++)
             {
-                for (int x = 0; x < 8; x++)
+                for (int height = 0; height < y; height++)
                 {
                     switch (gridValue[x, y])
                     {
                         case 11:
                         {
-                            if (gridValue[x, y - 1] == 0)
+                            if (gridValue[x, y - 1 - height] == 0)
                             {
                                 MoveDown(x, y, 1);
                             }
@@ -165,7 +206,7 @@ public class HintScanner : MonoBehaviour
                         }
                         case 21:
                         {
-                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0)
+                            if (gridValue[x, y - 1 - height] == 0 && gridValue[x + 1, y - 1 - height] == 0)
                             {
                                 MoveDown(x, y, 2);
                             }
@@ -174,8 +215,8 @@ public class HintScanner : MonoBehaviour
                         }
                         case 31:
                         {
-                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0 &&
-                                gridValue[x + 2, y - 1] == 0)
+                            if (gridValue[x, y - 1 - height] == 0 && gridValue[x + 1, y - 1 - height] == 0 &&
+                                gridValue[x + 2, y - 1 - height] == 0)
                             {
                                 MoveDown(x, y, 3);
                             }
@@ -184,9 +225,9 @@ public class HintScanner : MonoBehaviour
                         }
                         case 41:
                         {
-                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0 &&
-                                gridValue[x + 2, y - 1] == 0 &&
-                                gridValue[x + 3, y - 1] == 0)
+                            if (gridValue[x, y - 1 - height] == 0 && gridValue[x + 1, y - 1 - height] == 0 &&
+                                gridValue[x + 2, y - 1 - height] == 0 &&
+                                gridValue[x + 3, y - 1 - height] == 0)
                             {
                                 MoveDown(x, y, 4);
                             }
@@ -196,33 +237,41 @@ public class HintScanner : MonoBehaviour
                     }
                 }
             }
-
-            ScanMoveDown(gridValue, isContinue);
         }
-        else
-        {
-            //check full row
-            bool isRowFull = true;
-            for (int y = 0; y < 10; y++)
-            {
-                for (int x = 0; x < 8; x++)
-                {
-                    if (gridValue[x, y] == 0)
-                    {
-                        isRowFull = false;
-                    }
-                }
 
-                if (isRowFull)
+        /*string output = "";
+        for (int y = 9; y >= 0; y--)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                output += gridValue[x, y] + " ";
+            }
+
+            output += Environment.NewLine;
+        }
+
+        Debug.Log(output);*/
+        //check full row
+        for (int y = 0; y < 10; y++)
+        {
+            bool isRowFull = true;
+            for (int x = 0; x < 8; x++)
+            {
+                if (gridValue[x, y] == 0)
                 {
-                    isFoundFullRow = true;
+                    isRowFull = false;
                 }
+            }
+
+            if (isRowFull)
+            {
+                isFoundFullRow = true;
             }
         }
 
+
         void MoveDown(int x, int y, int length)
         {
-            isContinue = true;
             for (int i = 1; i <= length; i++)
             {
                 gridValue[x + i - 1, y] = 0;

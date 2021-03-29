@@ -1,0 +1,69 @@
+
+diamond_4x.png
+size: 1269,421
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+blue
+  rotate: true
+  xy: 421, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+green
+  rotate: true
+  xy: 527, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+grey
+  rotate: true
+  xy: 633, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+orange
+  rotate: true
+  xy: 739, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+pink
+  rotate: true
+  xy: 845, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+purple
+  rotate: true
+  xy: 951, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+rainbow filter
+  rotate: false
+  xy: 2, 2
+  size: 417, 417
+  orig: 417, 417
+  offset: 0, 0
+  index: -1
+red
+  rotate: true
+  xy: 1057, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1
+white
+  rotate: true
+  xy: 1163, 2
+  size: 417, 104
+  orig: 417, 104
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,69 @@
+
+diamond_1x.png
+size: 366,474
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+blue_1x
+  rotate: true
+  xy: 260, 367
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+green_1x
+  rotate: true
+  xy: 260, 260
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+grey_1x
+  rotate: true
+  xy: 260, 153
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+orange_1x
+  rotate: true
+  xy: 2, 109
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+pink_1x
+  rotate: true
+  xy: 108, 109
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+purple_1x
+  rotate: false
+  xy: 214, 47
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+rainbow filter
+  rotate: false
+  xy: 2, 216
+  size: 256, 256
+  orig: 258, 258
+  offset: 1, 1
+  index: -1
+red_1x
+  rotate: true
+  xy: 2, 2
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1
+white_1x
+  rotate: true
+  xy: 108, 2
+  size: 105, 104
+  orig: 105, 104
+  offset: 0, 0
+  index: -1

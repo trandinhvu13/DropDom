@@ -1,0 +1,69 @@
+
+diamond_2x.png
+size: 471,577
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+blue
+  rotate: false
+  xy: 260, 471
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+green
+  rotate: false
+  xy: 260, 365
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+grey
+  rotate: false
+  xy: 260, 259
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+orange
+  rotate: false
+  xy: 2, 213
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+pink
+  rotate: true
+  xy: 2, 2
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+purple
+  rotate: true
+  xy: 108, 2
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+rainbow filter
+  rotate: false
+  xy: 2, 319
+  size: 256, 256
+  orig: 258, 258
+  offset: 1, 1
+  index: -1
+red
+  rotate: false
+  xy: 214, 153
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1
+white
+  rotate: false
+  xy: 214, 47
+  size: 209, 104
+  orig: 209, 104
+  offset: 0, 0
+  index: -1

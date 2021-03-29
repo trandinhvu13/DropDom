@@ -1,0 +1,69 @@
+
+diamond_3x.png
+size: 1057,423
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+blue
+  rotate: true
+  xy: 421, 108
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+green
+  rotate: false
+  xy: 421, 2
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+grey
+  rotate: true
+  xy: 527, 108
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+orange
+  rotate: true
+  xy: 633, 108
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+pink
+  rotate: false
+  xy: 736, 2
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+purple
+  rotate: true
+  xy: 739, 108
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+rainbow filter
+  rotate: false
+  xy: 2, 4
+  size: 417, 417
+  orig: 417, 417
+  offset: 0, 0
+  index: -1
+red
+  rotate: true
+  xy: 845, 108
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
+white
+  rotate: true
+  xy: 951, 108
+  size: 313, 104
+  orig: 313, 104
+  offset: 0, 0
+  index: -1
