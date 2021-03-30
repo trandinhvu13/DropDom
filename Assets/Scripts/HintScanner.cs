@@ -70,14 +70,14 @@ public class HintScanner : MonoBehaviour
             gridValueDuplicate[x, 0] = BoardManager.Instance.standbyRowValue[x];
             gridValueDuplicate[x, 1] = BoardManager.Instance.gridValue[x, 0];
         }
-
+        bool isFullRow = true;
         for (int x = 0; x < 8; x++)
-        {
+        { 
             if (gridValueDuplicate[x, 1] == 11 || gridValueDuplicate[x, 1] == 21 || gridValueDuplicate[x, 1] == 31 ||
                 gridValueDuplicate[x, 1] == 41)
             {
                 int blockLength = (int)gridValueDuplicate[x, 1] / 10;
-                bool isFullRow = true;
+
                 for (int i = 0; i < blockLength; i++)
                 {
                     if (gridValueDuplicate[x + i, 0] != 0)
