@@ -9,6 +9,11 @@ public class HintScanner : MonoBehaviour
 {
     struct MoveableBlock
     {
+        public void IncreaseYPos()
+        {
+            pos.y++;
+        }
+
         public int leftBlank;
         public int rightBlank;
         public Vector2 pos;
@@ -28,6 +33,7 @@ public class HintScanner : MonoBehaviour
     private IEnumerator CheckHint;
     private bool isFoundFullRow = false;
     [SerializeField] private float delayTime;
+
     private void OnEnable()
     {
         GameEvents.Instance.OnStartHintScan += () =>
@@ -57,8 +63,38 @@ public class HintScanner : MonoBehaviour
 
     IEnumerator CheckForHint()
     {
-        //scan grid
         Debug.Log("Check hint");
+        //TH 1:
+        for (int x = 0; x < 8; x++)
+        {
+            gridValueDuplicate[x, 0] = BoardManager.Instance.standbyRowValue[x];
+            gridValueDuplicate[x, 1] = BoardManager.Instance.gridValue[x, 0];
+        }
+
+        for (int x = 0; x < 8; x++)
+        {
+            if (gridValueDuplicate[x, 1] == 11 || gridValueDuplicate[x, 1] == 21 || gridValueDuplicate[x, 1] == 31 ||
+                gridValueDuplicate[x, 1] == 41)
+            {
+                int blockLength = (int)gridValueDuplicate[x, 1] / 10;
+                bool isFullRow = true;
+                for (int i = 0; i < blockLength; i++)
+                {
+                    if (gridValueDuplicate[x + i, 0] != 0)
+                    {
+                        isFullRow = false;
+                    }
+                }
+
+                if (isFullRow)
+                {
+                    Debug.Log("no need");
+                    yield break;
+                }
+            }
+        }
+        //TH 2:
+        //scan grid
         for (int x = 0; x < 8; x++)
         {
             for (int y = 0; y < 10; y++)
@@ -88,7 +124,6 @@ public class HintScanner : MonoBehaviour
                         moveableBlocks.Add(moveableBlock);
                     }
                 }
-   
             }
 
             yield return new WaitForSeconds(delayTime);
@@ -104,14 +139,69 @@ public class HintScanner : MonoBehaviour
                 Debug.Log(hint.step);
                 //call hint event after
                 //use wait until for user select;
-
+                isFoundFullRow = true;
                 break;
             }
 
             yield return new WaitForSeconds(delayTime);
         }
 
-        moveableBlocks.Clear();
+        //moveableBlocks.Clear();
+        /*if (!isFoundFullRow)
+        {
+            Debug.Log("------------------------------------------------");
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 9; y > 0; y--)
+                {
+                    gridValueDuplicate[x, y] = BoardManager.Instance.gridValue[x, y - 1];
+                }
+            }
+
+            for (int x = 0; x < 8; x++)
+            {
+                gridValueDuplicate[x, 0] = BoardManager.Instance.standbyRowValue[x];
+            }
+
+            string output = "";
+            for (int y = 9; y >= 0; y--)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    output += gridValueDuplicate[x, y] + " ";
+                }
+
+                output += Environment.NewLine;
+            }
+
+            Debug.Log(output);
+
+            for (int i = 0; i < moveableBlocks.Count; i++)
+            {
+                moveableBlocks[i].IncreaseYPos();
+            }
+
+            
+            //check each moveable block
+            for (int i = 0; i < moveableBlocks.Count; i++)
+            {
+                if (SimulateDrop(moveableBlocks[i]))
+                {
+                    Debug.Log(hint.pos);
+                    Debug.Log(hint.dir);
+                    Debug.Log(hint.step);
+                    //call hint event after
+                    //use wait until for user select;
+
+                    break;
+                }
+
+                yield return new WaitForSeconds(delayTime);
+            }
+
+            moveableBlocks.Clear();
+        }*/
+
         yield return null;
     }
 
@@ -137,7 +227,7 @@ public class HintScanner : MonoBehaviour
                     }
                 }
 
-                //Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move left " + step + " steps");
+                Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move left " + step + " steps");
                 for (int i = 0; i < block.blockLength; i++)
                 {
                     grid[(int) oldPos.x + i, (int) oldPos.y] = 0;
@@ -156,6 +246,30 @@ public class HintScanner : MonoBehaviour
                     hint.step = step;
                     hasHint = true;
                     break;
+                }
+                else
+                {
+                    for (int x = 0; x < 8; x++)
+                    {
+                        for (int y = 9; y > 0; y--)
+                        {
+                            grid[x, y] = grid[x, y - 1];
+                        }
+                    }
+
+                    for (int x = 0; x < 8; x++)
+                    {
+                        grid[x, 0] = BoardManager.Instance.standbyRowValue[x];
+                    }
+                    ScanMoveDown(grid, true);
+                    if (isFoundFullRow)
+                    {
+                        hint.dir = "left";
+                        hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y+1);
+                        hint.step = step;
+                        hasHint = true;
+                        break;
+                    }
                 }
             }
         }
@@ -176,7 +290,7 @@ public class HintScanner : MonoBehaviour
                         }
                     }
 
-                    //Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move right " + step + " steps");
+                   Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move right " + step + " steps");
                     for (int i = 0; i < block.blockLength; i++)
                     {
                         grid[(int) oldPos.x + i, (int) oldPos.y] = 0;
@@ -195,6 +309,30 @@ public class HintScanner : MonoBehaviour
                         hint.step = step;
                         hasHint = true;
                         break;
+                    }
+                    else
+                    {
+                        for (int x = 0; x < 8; x++)
+                        {
+                            for (int y = 9; y > 0; y--)
+                            {
+                                grid[x, y] = grid[x, y - 1];
+                            }
+                        }
+
+                        for (int x = 0; x < 8; x++)
+                        {
+                            grid[x, 0] = BoardManager.Instance.standbyRowValue[x];
+                        }
+                        ScanMoveDown(grid, true);
+                        if (isFoundFullRow)
+                        {
+                            hint.dir = "left";
+                            hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y+1);
+                            hint.step = step;
+                            hasHint = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -296,7 +434,6 @@ public class HintScanner : MonoBehaviour
                 }
             }
         }
-        
 
 
         void MoveDown(int x, int y, int length)
