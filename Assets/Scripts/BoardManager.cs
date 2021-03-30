@@ -502,6 +502,7 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
+
             // done scan + execute move down (send message to block)
             //reset num of step array
             //GameEvents.Instance.FindNearbyBlocks();
