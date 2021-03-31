@@ -63,6 +63,7 @@ public class HintScanner : MonoBehaviour
 
     IEnumerator CheckForHint()
     {
+        moveableBlocks.Clear();
         Debug.Log("Check hint");
         //TH 1:
         for (int x = 0; x < 8; x++)
@@ -70,29 +71,60 @@ public class HintScanner : MonoBehaviour
             gridValueDuplicate[x, 0] = BoardManager.Instance.standbyRowValue[x];
             gridValueDuplicate[x, 1] = BoardManager.Instance.gridValue[x, 0];
         }
-        bool isFullRow = true;
+
         for (int x = 0; x < 8; x++)
-        { 
+        {
             if (gridValueDuplicate[x, 1] == 11 || gridValueDuplicate[x, 1] == 21 || gridValueDuplicate[x, 1] == 31 ||
                 gridValueDuplicate[x, 1] == 41)
             {
-                int blockLength = (int)gridValueDuplicate[x, 1] / 10;
+                int blockLength = (int) gridValueDuplicate[x, 1] / 10;
+                bool canDrop = true;
 
                 for (int i = 0; i < blockLength; i++)
                 {
                     if (gridValueDuplicate[x + i, 0] != 0)
                     {
-                        isFullRow = false;
+                        canDrop = false;
+                        break;
                     }
                 }
 
-                if (isFullRow)
+                if (canDrop)
                 {
-                    Debug.Log("no need");
-                    yield break;
+                    for (int i = 0; i < blockLength; i++)
+                    {
+                        gridValueDuplicate[x + i, 0] = gridValueDuplicate[x + i, 1];
+                    }
                 }
             }
         }
+        string output1 = "";
+        for (int y = 9; y >= 0; y--)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                output1 += gridValueDuplicate[x, y] + " ";
+            }
+
+            output1 += Environment.NewLine;
+        }
+
+        Debug.Log("first test " + output1);
+        bool isFullRow = true;
+        for (int x = 0; x < 8; x++)
+        {
+            if (gridValueDuplicate[x, 0] == 0)
+            {
+                isFullRow = false;
+                break;
+            }
+        }
+        if (isFullRow)
+        {
+            Debug.Log("no need");
+            yield break;
+        }
+        Debug.Log("____________________________________");
         //TH 2:
         //scan grid
         for (int x = 0; x < 8; x++)
@@ -102,6 +134,7 @@ public class HintScanner : MonoBehaviour
                 gridValueDuplicate[x, y] = BoardManager.Instance.gridValue[x, y];
             }
         }
+
 
         for (int x = 0; x < 8; x++)
         {
@@ -129,6 +162,7 @@ public class HintScanner : MonoBehaviour
             yield return new WaitForSeconds(delayTime);
         }
 
+     
         //check each moveable block
         for (int i = 0; i < moveableBlocks.Count; i++)
         {
@@ -261,11 +295,12 @@ public class HintScanner : MonoBehaviour
                     {
                         grid[x, 0] = BoardManager.Instance.standbyRowValue[x];
                     }
+
                     ScanMoveDown(grid, true);
                     if (isFoundFullRow)
                     {
                         hint.dir = "left";
-                        hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y+1);
+                        hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y);
                         hint.step = step;
                         hasHint = true;
                         break;
@@ -290,7 +325,7 @@ public class HintScanner : MonoBehaviour
                         }
                     }
 
-                   Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move right " + step + " steps");
+                    Debug.Log("block pos " + "[" + oldPos.x + "," + oldPos.y + "] move right " + step + " steps");
                     for (int i = 0; i < block.blockLength; i++)
                     {
                         grid[(int) oldPos.x + i, (int) oldPos.y] = 0;
@@ -324,11 +359,12 @@ public class HintScanner : MonoBehaviour
                         {
                             grid[x, 0] = BoardManager.Instance.standbyRowValue[x];
                         }
+
                         ScanMoveDown(grid, true);
                         if (isFoundFullRow)
                         {
                             hint.dir = "left";
-                            hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y+1);
+                            hint.pos = new Vector2((int) oldPos.x, (int) oldPos.y);
                             hint.step = step;
                             hasHint = true;
                             break;
