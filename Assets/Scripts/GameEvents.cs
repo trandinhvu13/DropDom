@@ -85,10 +85,10 @@ public class GameEvents : MonoBehaviour
 
     #region Hint
 
-    public event Action OnStartHintScan;
-    public void HintScan()
+    public event Action<bool> OnToggleHintScanner;
+    public void ToggleHintScanner(bool isTurnOn)
     {
-        OnStartHintScan?.Invoke();
+        OnToggleHintScanner?.Invoke(isTurnOn);
     }
 
     #endregion
