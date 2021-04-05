@@ -55,6 +55,8 @@ public class BoardManager : MonoBehaviour
     public Vector2 rainbowPos;
     public Color32[] blockColors;
     public bool canMoveDown = true;
+    [SerializeField] private GameObject hintScannerGameObject;
+    [SerializeField] private HintScanner hintScannerScript;
 
     #endregion
 
@@ -149,7 +151,7 @@ public class BoardManager : MonoBehaviour
         }
 
         StartCoroutine(NewGameAction());
-
+        GameEvents.Instance.ToggleHintScanner(true);
         //start new game
 
 
@@ -444,50 +446,23 @@ public class BoardManager : MonoBehaviour
             {
                 for (int x = 0; x < 8; x++)
                 {
-                    switch (gridValue[x, y])
+                    int blockLength = gridValue[x, y] / 10;
+                    if (gridValue[x, y] % 10 == 1)
                     {
-                        case 11:
+                        bool canDrop = true;
+                        for (int i = 0; i < blockLength; i++)
                         {
-                            if (gridValue[x, y - 1] == 0)
+                            if (gridValue[x + i, y - 1] != 0)
                             {
-                                MoveDown(x, y, 1);
-                                isFound = true;
+                                canDrop = false;
+                                break;
                             }
-
-                            break;
                         }
-                        case 21:
-                        {
-                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0)
-                            {
-                                MoveDown(x, y, 2);
-                                isFound = true;
-                            }
 
-                            break;
-                        }
-                        case 31:
+                        if (canDrop)
                         {
-                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0 &&
-                                gridValue[x + 2, y - 1] == 0)
-                            {
-                                MoveDown(x, y, 3);
-                                isFound = true;
-                            }
-
-                            break;
-                        }
-                        case 41:
-                        {
-                            if (gridValue[x, y - 1] == 0 && gridValue[x + 1, y - 1] == 0 &&
-                                gridValue[x + 2, y - 1] == 0 &&
-                                gridValue[x + 3, y - 1] == 0)
-                            {
-                                MoveDown(x, y, 4);
-                                isFound = true;
-                            }
-
-                            break;
+                            MoveDown(x, y, blockLength);
+                            isFound = true;
                         }
                     }
                 }
@@ -502,7 +477,6 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-
             // done scan + execute move down (send message to block)
             //reset num of step array
             //GameEvents.Instance.FindNearbyBlocks();
@@ -639,6 +613,7 @@ public class BoardManager : MonoBehaviour
                 }
 
                 canDrag = true;
+                //GameEvents.Instance.ToggleHintScanner(true);
             }
         }
 

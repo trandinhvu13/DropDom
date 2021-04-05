@@ -328,6 +328,12 @@ public class Block : MonoBehaviour, IPoolable
         HighlightBlock((int) pos.x);
         HighlightRoutine = Highlight();
         StartCoroutine(HighlightRoutine);
+        //GameEvents.Instance.ToggleHintScanner(false);
+    }
+
+    public void OnBlockDeselected()
+    {
+        //GameEvents.Instance.ToggleHintScanner(true);
     }
 
     IEnumerator Highlight()
