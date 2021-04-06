@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
@@ -53,7 +53,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private bool isNewGame = true;
     public bool canDrag = false;
     public Vector2 rainbowPos;
-    public Color32[] blockColors;
+    public String[] blockColors;
     public bool canMoveDown = true;
     [SerializeField] private GameObject hintScannerGameObject;
     [SerializeField] private HintScanner hintScannerScript;

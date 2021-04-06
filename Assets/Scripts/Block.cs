@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
 using Lean.Common;
@@ -9,6 +10,7 @@ using Shapes2D;
 using UnityEngine;
 using TMPro;
 using Random = UnityEngine.Random;
+using Spine.Unity;
 
 public class Block : MonoBehaviour, IPoolable
 {
@@ -27,20 +29,30 @@ public class Block : MonoBehaviour, IPoolable
     private int currentHighlightPos;
 
     //visual
-    [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private SpriteRenderer ghostSpriteRenderer;
+    //[SerializeField] private SpriteRenderer spriteRenderer;
+    //[SerializeField] private SpriteRenderer ghostSpriteRenderer;
     private IEnumerator HighlightRoutine;
-    [SerializeField] private Shape shape2d;
+
+    //[SerializeField] private Shape shape2d;
     [SerializeField] private GameObject ghostGameObject;
-    [SerializeField] private Shape ghostShape2d;
+
+    //[SerializeField] private Shape ghostShape2d;
     [SerializeField] private byte ghostAlpha;
+
+    //Spine
+    [SerializeField] SkeletonAnimation skeletonAnimation;
+    public Spine.AnimationState spineAnimationState;
+
+    [SerializeField] SkeletonAnimation ghostSkeletonAnimation;
+    public Spine.AnimationState ghostSpineAnimationState;
 
     #endregion
 
     #region Mono
-
+    
     public void OnSpawn()
     {
+//events
         GameEvents.Instance.OnBlockMoveUp += MoveUp;
         GameEvents.Instance.OnBlockMoveDown += MoveDown;
         GameEvents.Instance.OnFindLimitArea += FindLimitArea;
@@ -48,11 +60,9 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindNearByBlocks += FindNearbyBlocks;
         GameEvents.Instance.OnRainbowBlockAnimation += StartRainbowAnimation;
         GameEvents.Instance.OnChangeToRainbow += ChangeToRainbow;
-        shape2d.settings.fillColor =
-            BoardManager.Instance.blockColors[Random.Range(0, BoardManager.Instance.blockColors.Length)];
-        Color32 blockColor = shape2d.settings.fillColor;
-        ghostShape2d.settings.fillColor = new Color32(blockColor.r, blockColor.g, blockColor.b, ghostAlpha);
-        FindLimitArea();
+        spineAnimationState = skeletonAnimation.AnimationState;
+        ghostSpineAnimationState = ghostSkeletonAnimation.AnimationState;
+        ChangeColor();
         ghostGameObject.SetActive(false);
     }
 
@@ -77,12 +87,46 @@ public class Block : MonoBehaviour, IPoolable
 
     private void Awake()
     {
+        
     }
 
     #endregion
 
     #region Methods
 
+    private void ChangeColor(String _color=null)
+    {
+        String color;
+        if (_color != null)
+        {
+            color = _color;
+        }
+        else
+        {
+            color = BoardManager.Instance.blockColors[Random.Range(0, BoardManager.Instance.blockColors.Length)];
+        }
+
+        skeletonAnimation.Skeleton.SetSkin(color);
+        ghostSkeletonAnimation.Skeleton.SetSkin(color);
+        ghostSkeletonAnimation.skeleton.A = ghostAlpha;
+        if (color == "rainbow")
+        {
+            spineAnimationState.SetAnimation(0, $"rainbow idle {blockLength}x", true);
+            ghostSpineAnimationState.SetAnimation(0, $"rainbow idle {blockLength}x", true);
+        }
+        else
+        {
+            spineAnimationState.SetAnimation(1, $"Idle {blockLength}x", true);
+            ghostSpineAnimationState.SetAnimation(1, $"Idle {blockLength}x", true);
+        }
+
+        skeletonAnimation.Skeleton.SetToSetupPose();
+        ghostSkeletonAnimation.Skeleton.SetToSetupPose();
+        spineAnimationState.Apply(skeletonAnimation.skeleton);
+        ghostSpineAnimationState.Apply(ghostSkeletonAnimation.skeleton);
+
+
+    }
     private void MoveUp()
     {
         if ((int) pos.y >= 9)
@@ -111,9 +155,8 @@ public class Block : MonoBehaviour, IPoolable
             if (isRainbow)
             {
                 BoardManager.Instance.rainbowPos = pos;
-                shape2d.settings.fillColor = Color.black;
-                Color32 blockColor = shape2d.settings.fillColor;
-                ghostShape2d.settings.fillColor = new Color32(blockColor.r, blockColor.g, blockColor.b, ghostAlpha);
+                ChangeColor("rainbow");
+                
             }
         }
     }
@@ -155,7 +198,7 @@ public class Block : MonoBehaviour, IPoolable
                 yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
             }
 
-            shape2d.settings.fillColor = Color.white;
+            
             if (!isRainbow)
             {
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
@@ -300,13 +343,13 @@ public class Block : MonoBehaviour, IPoolable
 
             IEnumerator Blink(float waitTime)
             {
-                Color32 tempColor = shape2d.settings.fillColor;
+                //blink animation
                 float endTime = Time.time + waitTime;
                 while (Time.time < endTime)
                 {
-                    spriteRenderer.enabled = false;
+                    
                     yield return new WaitForSeconds(0.1f);
-                    spriteRenderer.enabled = true;
+                    
                     yield return new WaitForSeconds(0.1f);
                 }
             }
@@ -324,6 +367,7 @@ public class Block : MonoBehaviour, IPoolable
         {
             return;
         }
+
         currentHighlightPos = (int) pos.x;
         HighlightBlock((int) pos.x);
         HighlightRoutine = Highlight();
@@ -377,9 +421,7 @@ public class Block : MonoBehaviour, IPoolable
         if (_pos == pos)
         {
             isRainbow = true;
-            shape2d.settings.fillColor = Color.black;
-            Color32 blockColor = shape2d.settings.fillColor;
-            ghostShape2d.settings.fillColor = new Color32(blockColor.r, blockColor.g, blockColor.b, ghostAlpha);
+            ChangeColor("rainbow");
         }
     }
 
@@ -388,13 +430,13 @@ public class Block : MonoBehaviour, IPoolable
         ghostGameObject.SetActive(true);
         ghostGameObject.transform.parent = null;
     }
-    
+
     public void HideGhost()
     {
         ghostGameObject.transform.parent = gameObject.transform;
         ghostGameObject.transform.localPosition = Vector3.zero;
         ghostGameObject.SetActive(false);
-        
     }
+
     #endregion
 }
