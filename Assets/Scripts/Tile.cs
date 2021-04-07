@@ -55,10 +55,15 @@ public class Tile : MonoBehaviour
     {
         var localPosition = transform.localPosition;
         pos.x = localPosition.x;
-        pos.y = localPosition.y;
+
         if (!isStandbyTile)
         {
+            pos.y = localPosition.y;
             gameObject.name = "[" + pos.x + "," + pos.y + "]";
+        }
+        else
+        {
+            pos.y = -1;
         }
     }
 
@@ -87,7 +92,15 @@ public class Tile : MonoBehaviour
                 spawnOffset = 1.5f;
             }
 
-            Vector3 spawnPos = new Vector3(transform.position.x + spawnOffset, yPos, -2);
+            Vector3 spawnPos;
+            if (!isStandbyTile)
+            {
+                spawnPos = new Vector3(transform.position.x + spawnOffset, yPos, -2);
+            }
+            else
+            {
+                spawnPos = new Vector3(transform.position.x + spawnOffset, transform.position.y, -2);
+            }
 
             GameObject block = LeanPool.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, transform);
 
@@ -111,7 +124,7 @@ public class Tile : MonoBehaviour
             {
                 isHighlighted = true;
                 shape2d.settings.fillColor = highlightedColor;
-            }  
+            }
         }
     }
 
@@ -124,7 +137,7 @@ public class Tile : MonoBehaviour
             {
                 isHighlighted = false;
                 shape2d.settings.fillColor = normalColor;
-            }  
+            }
         }
     }
 

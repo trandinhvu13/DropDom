@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1107110244201834960}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.48, y: 1, z: 1}
+  m_LocalScale: {x: 0.48, y: 0.96, z: 1}
   m_Children: []
   m_Father: {fileID: 4181564426420443006}
   m_RootOrder: 2
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: b33dfd34011c37b44aea4aa3856adcd6, type: 2}
-  initialSkinName: 
+  initialSkinName: blue
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -111,7 +111,7 @@ MonoBehaviour:
   fixDrawOrder: 0
   addNormals: 0
   calculateTangents: 0
-  maskInteraction: 0
+  maskInteraction: 1
   maskMaterials:
     materialsMaskDisabled: []
     materialsInsideMask: []
@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 1256556227330884073}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.48, y: 1, z: 1}
+  m_LocalScale: {x: 0.48, y: 0.95, z: 1}
   m_Children: []
   m_Father: {fileID: 4181564426420443006}
   m_RootOrder: 1
@@ -180,8 +180,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: de8c4bc180121b544bcd72cdc3f49740, type: 2}
-  - {fileID: 2100000, guid: 8f3d393bb9797d74b8aa774b59204c60, type: 2}
+  - {fileID: 2100000, guid: 4d6709f106c71cd4db81de12fd543949, type: 2}
+  - {fileID: 2100000, guid: 546767f6050bc334abb18644c66ed9f9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: b33dfd34011c37b44aea4aa3856adcd6, type: 2}
-  initialSkinName: 
+  initialSkinName: blue
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -231,10 +231,14 @@ MonoBehaviour:
   fixDrawOrder: 0
   addNormals: 0
   calculateTangents: 0
-  maskInteraction: 0
+  maskInteraction: 1
   maskMaterials:
-    materialsMaskDisabled: []
-    materialsInsideMask: []
+    materialsMaskDisabled:
+    - {fileID: 2100000, guid: de8c4bc180121b544bcd72cdc3f49740, type: 2}
+    - {fileID: 2100000, guid: 8f3d393bb9797d74b8aa774b59204c60, type: 2}
+    materialsInsideMask:
+    - {fileID: 2100000, guid: 4d6709f106c71cd4db81de12fd543949, type: 2}
+    - {fileID: 2100000, guid: 546767f6050bc334abb18644c66ed9f9, type: 2}
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
   _animationName: Idle 2x
@@ -328,7 +332,7 @@ MonoBehaviour:
   rightBlankLength: 0
   isRainbow: 0
   ghostGameObject: {fileID: 1107110244201834960}
-  ghostAlpha: 150
+  ghostAlpha: 0.7
   skeletonAnimation: {fileID: 6277981911380944764}
   ghostSkeletonAnimation: {fileID: 7186508780890339868}
   skeletonDataAsset: {fileID: 11400000, guid: b33dfd34011c37b44aea4aa3856adcd6, type: 2}

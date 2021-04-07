@@ -37,7 +37,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private GameObject ghostGameObject;
 
     //[SerializeField] private Shape ghostShape2d;
-    [SerializeField] private byte ghostAlpha;
+    [SerializeField] private float ghostAlpha;
 
     //Spine
     [SerializeField] SkeletonAnimation skeletonAnimation;

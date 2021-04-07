@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1336931278499002423}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.24, y: 1, z: 1}
+  m_LocalScale: {x: 0.24, y: 0.95, z: 1}
   m_Children: []
   m_Father: {fileID: 6543756961069141356}
   m_RootOrder: 1
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 91a2e9c247d7d7d4d9f426182ce9c137, type: 2}
-  initialSkinName: 
+  initialSkinName: blue
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -111,10 +111,14 @@ MonoBehaviour:
   fixDrawOrder: 0
   addNormals: 0
   calculateTangents: 0
-  maskInteraction: 0
+  maskInteraction: 1
   maskMaterials:
-    materialsMaskDisabled: []
-    materialsInsideMask: []
+    materialsMaskDisabled:
+    - {fileID: 2100000, guid: 602bbcb307a63964b87c6defc7913ae6, type: 2}
+    - {fileID: 2100000, guid: f3fe24391403b03488b38886cf626727, type: 2}
+    materialsInsideMask:
+    - {fileID: 2100000, guid: 9dbd58b1e3a578a45b8365794d51ab5b, type: 2}
+    - {fileID: 2100000, guid: 1225a45252e86dc4fa9cd347d9630595, type: 2}
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
   _animationName: Idle 4x
@@ -148,7 +152,7 @@ Transform:
   m_GameObject: {fileID: 5819578135376699014}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.24, y: 1, z: 1}
+  m_LocalScale: {x: 0.24, y: 0.95, z: 1}
   m_Children: []
   m_Father: {fileID: 6543756961069141356}
   m_RootOrder: 2
@@ -216,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 91a2e9c247d7d7d4d9f426182ce9c137, type: 2}
-  initialSkinName: 
+  initialSkinName: blue
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -231,10 +235,14 @@ MonoBehaviour:
   fixDrawOrder: 0
   addNormals: 0
   calculateTangents: 0
-  maskInteraction: 0
+  maskInteraction: 1
   maskMaterials:
-    materialsMaskDisabled: []
-    materialsInsideMask: []
+    materialsMaskDisabled:
+    - {fileID: 2100000, guid: 602bbcb307a63964b87c6defc7913ae6, type: 2}
+    - {fileID: 2100000, guid: f3fe24391403b03488b38886cf626727, type: 2}
+    materialsInsideMask:
+    - {fileID: 2100000, guid: 9dbd58b1e3a578a45b8365794d51ab5b, type: 2}
+    - {fileID: 2100000, guid: 1225a45252e86dc4fa9cd347d9630595, type: 2}
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
   _animationName: Idle 4x
@@ -298,7 +306,7 @@ MonoBehaviour:
   rightBlankLength: 0
   isRainbow: 0
   ghostGameObject: {fileID: 5819578135376699014}
-  ghostAlpha: 150
+  ghostAlpha: 0.7
   skeletonAnimation: {fileID: 5868924865980689833}
   ghostSkeletonAnimation: {fileID: 8877069064629598531}
   skeletonDataAsset: {fileID: 11400000, guid: 91a2e9c247d7d7d4d9f426182ce9c137, type: 2}

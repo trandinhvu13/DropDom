@@ -40,6 +40,8 @@ public class BoardManager : MonoBehaviour
 
     public GameObject[,] gridGameObjects = new GameObject[8, 10];
     private GameObject[] standbyRowGameObjects = new GameObject[8];
+    private Transform[,] gridPoses = new Transform[8, 10];
+    private Transform[] standbyRowPoses = new Transform[8];
     public int[,] gridValue = new int[8, 10];
     public int[,] numOfStepDown = new int[8, 10];
     public int[] standbyRowValue = new int[8];
@@ -99,6 +101,7 @@ public class BoardManager : MonoBehaviour
             Vector2 tempPos = (o = Child.gameObject).GetComponent<Tile>().pos;
             Child.gameObject.GetComponent<Tile>().shape2d = Child.gameObject.GetComponent<Tile>().GetComponent<Shape>();
             gridGameObjects[(int) tempPos.x, (int) tempPos.y] = o;
+            gridPoses[(int) tempPos.x, (int) tempPos.y] = Child.GetComponent<Tile>().transform;
         }
 
         foreach (Transform Child in standbyRow.transform)
@@ -106,6 +109,7 @@ public class BoardManager : MonoBehaviour
             int x = (int) Child.gameObject.GetComponent<Tile>().pos.x;
 
             standbyRowGameObjects[x] = Child.gameObject;
+            standbyRowPoses[x] = Child.GetComponent<Tile>().transform;
         }
 
         rainbowPos = GameManager.Instance.savedRainbowPos;

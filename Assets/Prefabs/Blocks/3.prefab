@@ -58,7 +58,7 @@ MonoBehaviour:
   rightBlankLength: 0
   isRainbow: 0
   ghostGameObject: {fileID: 5797028296302223710}
-  ghostAlpha: 150
+  ghostAlpha: 0.7
   skeletonAnimation: {fileID: 7211654508472037475}
   ghostSkeletonAnimation: {fileID: 9070137668797579455}
   skeletonDataAsset: {fileID: 11400000, guid: 5147f50619a9fa14999e2316014a6358, type: 2}
@@ -259,7 +259,7 @@ Transform:
   m_GameObject: {fileID: 5797028296302223710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.32, y: 1, z: 1}
+  m_LocalScale: {x: 0.32, y: 0.95, z: 1}
   m_Children: []
   m_Father: {fileID: 465970393558547018}
   m_RootOrder: 2
@@ -327,7 +327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 5147f50619a9fa14999e2316014a6358, type: 2}
-  initialSkinName: 
+  initialSkinName: blue
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -342,10 +342,14 @@ MonoBehaviour:
   fixDrawOrder: 0
   addNormals: 0
   calculateTangents: 0
-  maskInteraction: 0
+  maskInteraction: 1
   maskMaterials:
-    materialsMaskDisabled: []
-    materialsInsideMask: []
+    materialsMaskDisabled:
+    - {fileID: 2100000, guid: 8367c9133eca6674fa34f701df0a3ff4, type: 2}
+    - {fileID: 2100000, guid: 6670f4c818650834fbb242aefbfff4fd, type: 2}
+    materialsInsideMask:
+    - {fileID: 2100000, guid: 95967df9814542841a4fe5fbf9ec5d92, type: 2}
+    - {fileID: 2100000, guid: 7860d5108c699ad4f99e37a23495650c, type: 2}
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
   _animationName: Idle 3x
@@ -379,7 +383,7 @@ Transform:
   m_GameObject: {fileID: 7000428380999892102}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.32, y: 1, z: 1}
+  m_LocalScale: {x: 0.32, y: 0.95, z: 1}
   m_Children: []
   m_Father: {fileID: 465970393558547018}
   m_RootOrder: 1
@@ -447,7 +451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 5147f50619a9fa14999e2316014a6358, type: 2}
-  initialSkinName: 
+  initialSkinName: blue
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -462,10 +466,14 @@ MonoBehaviour:
   fixDrawOrder: 0
   addNormals: 0
   calculateTangents: 0
-  maskInteraction: 0
+  maskInteraction: 1
   maskMaterials:
-    materialsMaskDisabled: []
-    materialsInsideMask: []
+    materialsMaskDisabled:
+    - {fileID: 2100000, guid: 8367c9133eca6674fa34f701df0a3ff4, type: 2}
+    - {fileID: 2100000, guid: 6670f4c818650834fbb242aefbfff4fd, type: 2}
+    materialsInsideMask:
+    - {fileID: 2100000, guid: 95967df9814542841a4fe5fbf9ec5d92, type: 2}
+    - {fileID: 2100000, guid: 7860d5108c699ad4f99e37a23495650c, type: 2}
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
   _animationName: Idle 3x
