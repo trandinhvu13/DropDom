@@ -61,6 +61,7 @@ MonoBehaviour:
   ghostAlpha: 150
   skeletonAnimation: {fileID: 7211654508472037475}
   ghostSkeletonAnimation: {fileID: 9070137668797579455}
+  skeletonDataAsset: {fileID: 11400000, guid: 5147f50619a9fa14999e2316014a6358, type: 2}
 --- !u!114 &525154290136819188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,6 +292,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 8367c9133eca6674fa34f701df0a3ff4, type: 2}
+  - {fileID: 2100000, guid: 6670f4c818650834fbb242aefbfff4fd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -410,6 +412,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 8367c9133eca6674fa34f701df0a3ff4, type: 2}
+  - {fileID: 2100000, guid: 6670f4c818650834fbb242aefbfff4fd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

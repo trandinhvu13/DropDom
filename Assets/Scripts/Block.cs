@@ -46,10 +46,11 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] SkeletonAnimation ghostSkeletonAnimation;
     public Spine.AnimationState ghostSpineAnimationState;
 
+    [SerializeField] private SkeletonDataAsset skeletonDataAsset; 
     #endregion
 
     #region Mono
-    
+
     public void OnSpawn()
     {
 //events
@@ -87,15 +88,26 @@ public class Block : MonoBehaviour, IPoolable
 
     private void Awake()
     {
-        
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            skeletonAnimation.Skeleton.SetSkin("red");
+        }
     }
 
     #endregion
 
     #region Methods
 
-    private void ChangeColor(String _color=null)
+    private void ChangeColor(String _color = null)
     {
+        skeletonAnimation.ClearState();
+        ghostSkeletonAnimation.ClearState();
+
+
         String color;
         if (_color != null)
         {
@@ -111,13 +123,13 @@ public class Block : MonoBehaviour, IPoolable
         ghostSkeletonAnimation.skeleton.A = ghostAlpha;
         if (color == "rainbow")
         {
-            spineAnimationState.SetAnimation(0, $"rainbow idle {blockLength}x", true);
-            ghostSpineAnimationState.SetAnimation(0, $"rainbow idle {blockLength}x", true);
+            spineAnimationState.SetAnimation(0, $"rainbow idle {blockLength.ToString()}x", true);
+            ghostSpineAnimationState.SetAnimation(0, $"rainbow idle {blockLength.ToString()}x", true);
         }
         else
         {
-            spineAnimationState.SetAnimation(1, $"Idle {blockLength}x", true);
-            ghostSpineAnimationState.SetAnimation(1, $"Idle {blockLength}x", true);
+            spineAnimationState.SetAnimation(1, $"Idle {blockLength.ToString()}x", true);
+            ghostSpineAnimationState.SetAnimation(1, $"Idle {blockLength.ToString()}x", true);
         }
 
         skeletonAnimation.Skeleton.SetToSetupPose();
@@ -126,7 +138,9 @@ public class Block : MonoBehaviour, IPoolable
         ghostSpineAnimationState.Apply(ghostSkeletonAnimation.skeleton);
 
 
+
     }
+
     private void MoveUp()
     {
         if ((int) pos.y >= 9)
@@ -156,7 +170,6 @@ public class Block : MonoBehaviour, IPoolable
             {
                 BoardManager.Instance.rainbowPos = pos;
                 ChangeColor("rainbow");
-                
             }
         }
     }
@@ -198,7 +211,7 @@ public class Block : MonoBehaviour, IPoolable
                 yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
             }
 
-            
+
             if (!isRainbow)
             {
                 LeanTween.scale(gameObject, Vector3.zero, AnimationManager.Instance.explodeTime).setEase
@@ -347,9 +360,8 @@ public class Block : MonoBehaviour, IPoolable
                 float endTime = Time.time + waitTime;
                 while (Time.time < endTime)
                 {
-                    
                     yield return new WaitForSeconds(0.1f);
-                    
+
                     yield return new WaitForSeconds(0.1f);
                 }
             }

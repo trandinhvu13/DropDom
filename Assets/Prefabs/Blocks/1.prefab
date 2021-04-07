@@ -91,6 +91,7 @@ MonoBehaviour:
   ghostAlpha: 150
   skeletonAnimation: {fileID: 6905751863315074358}
   ghostSkeletonAnimation: {fileID: 4633784128377522729}
+  skeletonDataAsset: {fileID: 11400000, guid: 246d170c028895740a1b70ea5fc03529, type: 2}
 --- !u!114 &1923544413323213716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,6 +292,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 3eced9279e70031459c992d980e6707a, type: 2}
+  - {fileID: 2100000, guid: d8360784ff280b446afa8039c498fc9a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -346,7 +348,7 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
-  _animationName: Idle 1x
+  _animationName: 
   loop: 1
   timeScale: 1
 --- !u!1 &6227061164549648011
@@ -410,6 +412,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 3eced9279e70031459c992d980e6707a, type: 2}
+  - {fileID: 2100000, guid: d8360784ff280b446afa8039c498fc9a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -465,6 +468,6 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
-  _animationName: Idle 1x
+  _animationName: rainbow idle 1x
   loop: 1
   timeScale: 1

@@ -61,6 +61,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 602bbcb307a63964b87c6defc7913ae6, type: 2}
+  - {fileID: 2100000, guid: f3fe24391403b03488b38886cf626727, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -180,6 +181,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 602bbcb307a63964b87c6defc7913ae6, type: 2}
+  - {fileID: 2100000, guid: f3fe24391403b03488b38886cf626727, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -299,6 +301,7 @@ MonoBehaviour:
   ghostAlpha: 150
   skeletonAnimation: {fileID: 5868924865980689833}
   ghostSkeletonAnimation: {fileID: 8877069064629598531}
+  skeletonDataAsset: {fileID: 11400000, guid: 91a2e9c247d7d7d4d9f426182ce9c137, type: 2}
 --- !u!114 &-7248031898072347155
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,11 +18,13 @@ MonoBehaviour:
   skeletonJSON: {fileID: 4900000, guid: a7bccd54d0ca91848b03c8b60b5b93f0, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
-    requiresBlendModeMaterials: 0
+    requiresBlendModeMaterials: 1
     applyAdditiveMaterial: 1
     additiveMaterials: []
     multiplyMaterials: []
-    screenMaterials: []
+    screenMaterials:
+    - pageName: diamond_2x.png
+      material: {fileID: 2100000, guid: 8f3d393bb9797d74b8aa774b59204c60, type: 2}
   skeletonDataModifiers: []
   fromAnimation: []
   toAnimation: []
