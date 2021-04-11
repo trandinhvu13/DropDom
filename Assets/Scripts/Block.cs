@@ -46,7 +46,8 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] SkeletonAnimation ghostSkeletonAnimation;
     public Spine.AnimationState ghostSpineAnimationState;
 
-    [SerializeField] private SkeletonDataAsset skeletonDataAsset; 
+    [SerializeField] private SkeletonDataAsset skeletonDataAsset;
+
     #endregion
 
     #region Mono
@@ -136,9 +137,6 @@ public class Block : MonoBehaviour, IPoolable
         ghostSkeletonAnimation.Skeleton.SetToSetupPose();
         spineAnimationState.Apply(skeletonAnimation.skeleton);
         ghostSpineAnimationState.Apply(ghostSkeletonAnimation.skeleton);
-
-
-
     }
 
     private void MoveUp()
@@ -153,6 +151,11 @@ public class Block : MonoBehaviour, IPoolable
             {
                 isOnBoard = true;
             }
+
+            // Vector3 tile = BoardManager.Instance.gridPoses[(int) pos.x, (int) pos.y + 1].position;
+            // Debug.Log($"pos cua tile {pos} la {tile}");
+            // Vector3 des = new Vector3(tile.x, tile.y, -2);
+            // Debug.Log(des);
 
             Vector3 des = new Vector3(transform.position.x, pos.y + 1, -2);
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y + 1].transform;
@@ -185,8 +188,8 @@ public class Block : MonoBehaviour, IPoolable
                 BoardManager.Instance.rainbowPos = pos;
             }
 
-            Vector2 newPos = new Vector2(transform.position.x, pos.y);
-            Vector3 des = new Vector3(newPos.x, pos.y, transform.position.z);
+            Vector2 newPos = new Vector2(transform.position.x, transform.position.y - step);
+            Vector3 des = new Vector3(newPos.x, newPos.y, transform.position.z);
             transform.parent = null;
             transform.parent = BoardManager.Instance.gridGameObjects[(int) pos.x, (int) pos.y].transform;
 
@@ -323,8 +326,9 @@ public class Block : MonoBehaviour, IPoolable
                 }
                 else
                 {
+                    Vector3 tile = BoardManager.Instance.gridPoses[(int) oldPos.x, (int) oldPos.y].position;
                     Vector3 des =
-                        new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
+                        new Vector3(tile.x + (0.5f * (blockLength - 1)), tile.y, -2); //ve vi tri cu
                     LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                         .Instance.moveToTileTween).setOnComplete(() =>
                     {
@@ -336,7 +340,9 @@ public class Block : MonoBehaviour, IPoolable
             }
             else
             {
-                Vector3 des = new Vector3(oldPos.x + (0.5f * (blockLength - 1)), oldPos.y, -2); //ve vi tri cu
+                Vector3 tile = BoardManager.Instance.gridPoses[(int) oldPos.x, (int) oldPos.y].position;
+                Vector3 des =
+                    new Vector3(tile.x + (0.5f * (blockLength - 1)), tile.y, -2); //ve vi tri cu
                 LeanTween.move(gameObject, des, AnimationManager.Instance.moveToTileTime).setEase(AnimationManager
                     .Instance.moveToTileTween).setOnComplete(() =>
                 {

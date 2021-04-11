@@ -123,7 +123,7 @@ public class Tile : MonoBehaviour
             if (!isHighlighted)
             {
                 isHighlighted = true;
-                shape2d.settings.fillColor = highlightedColor;
+                //shape2d.settings.fillColor = highlightedColor;
             }
         }
     }
@@ -136,7 +136,7 @@ public class Tile : MonoBehaviour
             if (isHighlighted)
             {
                 isHighlighted = false;
-                shape2d.settings.fillColor = normalColor;
+                //shape2d.settings.fillColor = normalColor;
             }
         }
     }
