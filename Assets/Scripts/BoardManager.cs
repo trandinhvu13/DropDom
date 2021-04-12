@@ -618,6 +618,10 @@ public class BoardManager : MonoBehaviour
                 }
 
                 canDrag = true;
+                if (GameOverCheck())
+                {
+                    Debug.Log("thua vl");
+                }
                 //GameEvents.Instance.ToggleHintScanner(true);
             }
         }
@@ -747,6 +751,20 @@ public class BoardManager : MonoBehaviour
         return true;
     }
 
+    public bool GameOverCheck()
+    {
+        bool isGameOver = false;
+        for (int i = 0; i < 8; i++)
+        {
+            if (gridValue[i,9] != 0)
+            {
+                isGameOver = true;
+                break;
+            }
+        }
+        return isGameOver;
+    }
+    
     /*private void DebugLogArray(int[] array)
     {
         string output = "";

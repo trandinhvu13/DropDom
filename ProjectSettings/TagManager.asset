@@ -44,9 +44,18 @@ TagManager:
   - name: Bottom UI
     uniqueID: 768687905
     locked: 0
+  - name: FadeTutorial
+    uniqueID: 4154686977
+    locked: 0
   - name: Block
     uniqueID: 980989741
     locked: 0
   - name: Top UI
     uniqueID: 957040829
+    locked: 0
+  - name: FadeUI
+    uniqueID: 2673492387
+    locked: 0
+  - name: Pause
+    uniqueID: 823075495
     locked: 0
