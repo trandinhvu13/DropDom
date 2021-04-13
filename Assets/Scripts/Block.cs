@@ -47,7 +47,7 @@ public class Block : MonoBehaviour, IPoolable
     public Spine.AnimationState ghostSpineAnimationState;
 
     [SerializeField] private SkeletonDataAsset skeletonDataAsset;
-
+    [SerializeField] private BoxCollider2D col;
     #endregion
 
     #region Mono
@@ -62,6 +62,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindNearByBlocks += FindNearbyBlocks;
         GameEvents.Instance.OnRainbowBlockAnimation += StartRainbowAnimation;
         GameEvents.Instance.OnChangeToRainbow += ChangeToRainbow;
+        GameEvents.Instance.OnToggleCollider += ToggleBoxCollider;
         spineAnimationState = skeletonAnimation.AnimationState;
         ghostSpineAnimationState = ghostSkeletonAnimation.AnimationState;
         ChangeColor();
@@ -77,6 +78,7 @@ public class Block : MonoBehaviour, IPoolable
         GameEvents.Instance.OnFindNearByBlocks -= FindNearbyBlocks;
         GameEvents.Instance.OnRainbowBlockAnimation -= StartRainbowAnimation;
         GameEvents.Instance.OnChangeToRainbow -= ChangeToRainbow;
+        GameEvents.Instance.OnToggleCollider -= ToggleBoxCollider;
         transform.parent = null;
         isOnBoard = false;
         if (isRainbow)
@@ -454,6 +456,18 @@ public class Block : MonoBehaviour, IPoolable
         ghostGameObject.transform.parent = gameObject.transform;
         ghostGameObject.transform.localPosition = Vector3.zero;
         ghostGameObject.SetActive(false);
+    }
+
+    public void ToggleBoxCollider(bool isEnabled)
+    {
+        if (isEnabled)
+        {
+            col.enabled = true;
+        }
+        else
+        {
+            col.enabled = false;
+        }
     }
 
     #endregion

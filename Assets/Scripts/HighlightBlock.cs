@@ -26,6 +26,7 @@ public class HighlightBlock : MonoBehaviour
 
     public void ChangeToHighlightColor(int x)
     {
+        if (AnimationManager.Instance.isPause) return;
         if (column != x) return;
         if (!isHighlighted)
         {
@@ -36,6 +37,7 @@ public class HighlightBlock : MonoBehaviour
 
     public void ChangeToNormalColor(int x)
     {
+        if (AnimationManager.Instance.isPause) return;
         if (column != x) return;
         if (isHighlighted)
         {

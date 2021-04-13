@@ -92,4 +92,18 @@ public class GameEvents : MonoBehaviour
     }
 
     #endregion
+
+    #region UI
+    public event Action<string,bool> OnChangeCanPress;
+    public void ChangeCanPress(string name, bool canPress)
+    {
+        OnChangeCanPress?.Invoke(name,canPress);
+    }
+    
+    public event Action<bool> OnToggleCollider;
+    public void ToggleCollider(bool isEnabled)
+    {
+        OnToggleCollider?.Invoke(isEnabled);
+    }
+    #endregion
 }

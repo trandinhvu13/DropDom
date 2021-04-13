@@ -80,7 +80,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 980989741
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7186508780890339868
@@ -200,7 +200,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 980989741
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 3
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &6277981911380944764
@@ -336,6 +336,7 @@ MonoBehaviour:
   skeletonAnimation: {fileID: 6277981911380944764}
   ghostSkeletonAnimation: {fileID: 7186508780890339868}
   skeletonDataAsset: {fileID: 11400000, guid: b33dfd34011c37b44aea4aa3856adcd6, type: 2}
+  col: {fileID: -2613935457714149934}
 --- !u!114 &9006199561854317759
 MonoBehaviour:
   m_ObjectHideFlags: 0

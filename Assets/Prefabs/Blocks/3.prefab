@@ -62,6 +62,7 @@ MonoBehaviour:
   skeletonAnimation: {fileID: 7211654508472037475}
   ghostSkeletonAnimation: {fileID: 9070137668797579455}
   skeletonDataAsset: {fileID: 11400000, guid: 5147f50619a9fa14999e2316014a6358, type: 2}
+  col: {fileID: -8875839867858840749}
 --- !u!114 &525154290136819188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,7 +312,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 980989741
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &9070137668797579455
@@ -435,7 +436,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 980989741
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 3
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7211654508472037475

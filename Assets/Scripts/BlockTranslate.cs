@@ -149,10 +149,9 @@ public class BlockTranslate : MonoBehaviour
 
     private void Translate(Vector2 screenDelta)
     {
-        if (!BoardManager.Instance.canDrag)
-        {
-            return;
-        }
+        if (AnimationManager.Instance.isPause) return;
+        if (!BoardManager.Instance.canDrag) return;
+        
         // Make sure the camera exists
         var camera = LeanHelper.GetCamera(Camera, gameObject);
 
