@@ -664,12 +664,18 @@ public class BoardManager : MonoBehaviour
                 canMoveDown = false;
                 yield return new WaitForSeconds(AnimationManager.Instance.rainbowExplodeTime);
                 canMoveDown = true;
+                //rainbow explode
             }
-
+            else
+            {
+                GameEvents.Instance.PlaySmoke(_y);
+            }
+          
             yield return new WaitForSeconds(AnimationManager.Instance.explodeTime);
 
             ScanMoveDown(true); // after an amount of time
-
+            //yield return new WaitForSeconds(AnimationManager.Instance.moveDownTime-0.05f);
+            
             yield return null;
         }
     }

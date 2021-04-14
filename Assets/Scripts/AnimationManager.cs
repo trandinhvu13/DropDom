@@ -41,13 +41,16 @@ public class AnimationManager : MonoBehaviour
     public float rainbowExplodeTime;
     public LeanTweenType fadeBackgroundTween;
     public float fadeBackgroundTime;
-    [Header("Pause Menu")] 
-    public bool isPause = false;
+    public LeanTweenType trailMoveTween;
+    public float trailMoveTime;
+    public float trailFasterRate;
+    [Header("Pause Menu")] public bool isPause = false;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private SpriteRenderer soundToggle;
     [SerializeField] private Sprite soundOn;
     [SerializeField] private Sprite soundOff;
     [Header("Fade")] [SerializeField] private SpriteRenderer fadeBackground;
+
     #endregion
 
     #region UI
@@ -93,7 +96,7 @@ public class AnimationManager : MonoBehaviour
     {
         LeanTween.value(gameObject, 0, 90, fadeBackgroundTime).setEase(fadeBackgroundTween).setOnUpdate((val) =>
         {
-            fadeBackground.color = new Color32(10, 10, 10, (byte)val);
+            fadeBackground.color = new Color32(10, 10, 10, (byte) val);
         });
     }
 
@@ -101,8 +104,9 @@ public class AnimationManager : MonoBehaviour
     {
         LeanTween.value(gameObject, 90, 0, fadeBackgroundTime).setEase(fadeBackgroundTween).setOnUpdate((val) =>
         {
-            fadeBackground.color = new Color32(10, 10, 10, (byte)val);
+            fadeBackground.color = new Color32(10, 10, 10, (byte) val);
         });
     }
+
     #endregion
 }

@@ -105,5 +105,11 @@ public class GameEvents : MonoBehaviour
     {
         OnToggleCollider?.Invoke(isEnabled);
     }
+    
+    public event Action<int> OnPlaySmoke;
+    public void PlaySmoke(int row)
+    {
+        OnPlaySmoke?.Invoke(row);
+    }
     #endregion
 }

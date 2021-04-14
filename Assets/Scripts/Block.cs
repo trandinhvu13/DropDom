@@ -26,6 +26,7 @@ public class Block : MonoBehaviour, IPoolable
     [SerializeField] private int rightBlankLength = 0;
     public bool isRainbow = false;
     private List<Vector2> nearbyBlock = new List<Vector2>();
+
     private int currentHighlightPos;
 
     //visual
@@ -48,6 +49,13 @@ public class Block : MonoBehaviour, IPoolable
 
     [SerializeField] private SkeletonDataAsset skeletonDataAsset;
     [SerializeField] private BoxCollider2D col;
+    [SerializeField] private GameObject trail;
+    [SerializeField] private GameObject corner1;
+    [SerializeField] private GameObject corner2;
+    [SerializeField] private GameObject corner3;
+    [SerializeField] private GameObject corner4;
+    [SerializeField] private GameObject starTrail;
+
     #endregion
 
     #region Mono
@@ -67,6 +75,8 @@ public class Block : MonoBehaviour, IPoolable
         ghostSpineAnimationState = ghostSkeletonAnimation.AnimationState;
         ChangeColor();
         ghostGameObject.SetActive(false);
+        trail.SetActive(false);
+        starTrail.SetActive(false);
     }
 
     public void OnDespawn()
@@ -86,6 +96,8 @@ public class Block : MonoBehaviour, IPoolable
             BoardManager.Instance.hasRainbowBlock = false;
         }
 
+        trail.SetActive(false);
+        starTrail.SetActive(false);
         transform.localScale = new Vector3(blockLength, 1, 1);
     }
 
@@ -359,19 +371,40 @@ public class Block : MonoBehaviour, IPoolable
     {
         if (pos == _pos)
         {
+            trail.gameObject.SetActive(true);
             //Debug.Log("rainbow anim");
-            StartCoroutine(Blink(AnimationManager.Instance.rainbowExplodeTime));
+            float trailTweenTime = AnimationManager.Instance.trailMoveTime;
+            StartCoroutine(MoveTrail(AnimationManager.Instance.rainbowExplodeTime));
 
-            IEnumerator Blink(float waitTime)
+            IEnumerator MoveTrail(float waitTime)
             {
-                //blink animation
                 float endTime = Time.time + waitTime;
                 while (Time.time < endTime)
                 {
-                    yield return new WaitForSeconds(0.1f);
-
-                    yield return new WaitForSeconds(0.1f);
+                    LeanTween.move(trail, corner2.transform.position, trailTweenTime).setEase(AnimationManager.Instance
+                        .trailMoveTween).setOnComplete((() =>
+                    {
+                        LeanTween.move(trail, corner3.transform.position, trailTweenTime).setEase(AnimationManager
+                            .Instance
+                            .trailMoveTween).setOnComplete(() =>
+                        {
+                            LeanTween.move(trail, corner4.transform.position, trailTweenTime).setEase(AnimationManager
+                                .Instance
+                                .trailMoveTween).setOnComplete(() =>
+                            {
+                                LeanTween.move(trail, corner1.transform.position, trailTweenTime).setEase(
+                                    AnimationManager.Instance
+                                        .trailMoveTween).setOnComplete(() => { });
+                            });
+                        });
+                    }));
+                    yield return new WaitForSeconds(trailTweenTime * 4);
+                    trailTweenTime -= AnimationManager.Instance.trailFasterRate;
                 }
+
+                trail.gameObject.SetActive(false);
+                trail.gameObject.transform.position = corner1.transform.position;
+                yield return null;
             }
         }
     }
@@ -388,6 +421,7 @@ public class Block : MonoBehaviour, IPoolable
             return;
         }
 
+        starTrail.SetActive(true);
         currentHighlightPos = (int) pos.x;
         HighlightBlock((int) pos.x);
         HighlightRoutine = Highlight();
@@ -397,7 +431,16 @@ public class Block : MonoBehaviour, IPoolable
 
     public void OnBlockDeselected()
     {
+        starTrail.transform.parent = null;
+        Invoke("DisableStarTrail", 0.65f);
         //GameEvents.Instance.ToggleHintScanner(true);
+    }
+
+    void DisableStarTrail()
+    {
+        starTrail.transform.parent = gameObject.transform;
+        starTrail.SetActive(false);
+        starTrail.transform.localPosition = Vector3.zero;
     }
 
     IEnumerator Highlight()
