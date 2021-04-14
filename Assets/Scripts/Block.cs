@@ -74,6 +74,8 @@ public class Block : MonoBehaviour, IPoolable
         spineAnimationState = skeletonAnimation.AnimationState;
         ghostSpineAnimationState = ghostSkeletonAnimation.AnimationState;
         ChangeColor();
+        starTrail.transform.parent = gameObject.transform;
+        starTrail.transform.localScale = new Vector3(1, 1, 1);
         ghostGameObject.SetActive(false);
         trail.SetActive(false);
         starTrail.SetActive(false);
